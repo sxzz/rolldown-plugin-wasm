@@ -1,4 +1,4 @@
-// b62665e669ab1545.wasm?init
+// b62665e669ab1545.wasm
 [BINARY]
 // init.js
 //#region \0wasm-helpers.js
@@ -28,7 +28,7 @@ function loadWasmModule(sync, filepath, src, imports) {
 //#endregion
 //#region tests/fixtures/add.wasm?init
 function __wasm_init(imports) {
-	return loadWasmModule(false, "b62665e669ab1545.wasm?init", null, imports);
+	return loadWasmModule(false, "b62665e669ab1545.wasm", null, imports);
 }
 
 //#endregion

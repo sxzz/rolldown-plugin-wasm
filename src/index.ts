@@ -8,9 +8,12 @@ import { parseWasm, type WasmInfo } from './wasm-parser'
 import type { Options } from './options'
 import type { Plugin } from 'rolldown'
 
-const postfixRE = /[#?].*$/s
-function cleanUrl(url: string): string {
-  return url.replace(postfixRE, '')
+function parseId(
+  url: string,
+): [file: string, query: string | undefined, params: URLSearchParams] {
+  const [file, query] = url.split('?')
+  const params = new URLSearchParams(query)
+  return [file, query, params]
 }
 
 export function wasm(options: Options = {}): Plugin {
@@ -58,10 +61,10 @@ export function wasm(options: Options = {}): Plugin {
           return id
         }
 
-        const query = id.split('?')[1]
+        const [file, query] = parseId(id)
         if (!query) return
 
-        const resolved = await this.resolve(cleanUrl(id), ...args)
+        const resolved = await this.resolve(file, ...args)
         if (resolved) {
           resolved.id += `?${query}`
         }
@@ -80,9 +83,8 @@ export function wasm(options: Options = {}): Plugin {
           return getHelpersModule(targetEnv || 'auto')
         }
 
-        const file = cleanUrl(id)
+        const [file, , params] = parseId(id)
         const buffer = await readFile(file)
-        const params = new URLSearchParams(id.split('?')[1])
         const isInit = params.has('init')
 
         this.addWatchFile(file)
@@ -99,8 +101,8 @@ export function wasm(options: Options = {}): Plugin {
             .update(buffer)
             .digest('hex')
             .slice(0, 16)
-          const ext = path.extname(id)
-          const name = path.basename(id, ext)
+          const ext = path.extname(file)
+          const name = path.basename(file, ext)
 
           const outputFileName = fileName
             .replaceAll('[hash]', hash)
@@ -112,7 +114,7 @@ export function wasm(options: Options = {}): Plugin {
           // only copy if the file is not marked `sync`, `sync` files are always inlined
           const query = new URLSearchParams(id.split('?')[1])
           if (!query.has('sync')) {
-            copies[id] = {
+            copies[file] = {
               filename: outputFileName,
               publicFilepath,
               buffer,
@@ -127,12 +129,12 @@ export function wasm(options: Options = {}): Plugin {
     transform: {
       filter: [include(id(/\.wasm$/, { cleanUrl: true }))],
       handler(code, id) {
-        const params = new URLSearchParams(id.split('?')[1])
+        const [file, , params] = parseId(id)
         const isSync = params.has('sync')
         const isInit = params.has('init')
 
-        const publicFilepath = copies[id]
-          ? `'${copies[id].publicFilepath}'`
+        const publicFilepath = copies[file]
+          ? `'${copies[file].publicFilepath}'`
           : null
         let src: string | null
 

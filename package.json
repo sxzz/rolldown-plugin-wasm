@@ -46,8 +46,6 @@
     "rolldown": "^1.0.0-beta.58"
   },
   "devDependencies": {
-    "@antfu/utils": "^9.3.0",
-    "@swc/wasm": "^1.15.8",
     "@sxzz/eslint-config": "^7.4.4",
     "@sxzz/prettier-config": "^2.2.6",
     "@sxzz/test-utils": "^0.5.15",

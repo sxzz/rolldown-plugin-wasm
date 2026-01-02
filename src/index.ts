@@ -3,7 +3,13 @@ import { createHash } from 'node:crypto'
 import { readFile } from 'node:fs/promises'
 import path from 'node:path'
 import { id, include, or } from 'rolldown/filter'
-import { getHelpersModule, HELPERS_ID, HELPERS_ID_RE } from './helper'
+import {
+  codegenSimpleObject,
+  getHelpersModule,
+  HELPERS_ID,
+  HELPERS_ID_RE,
+  type SimpleObject,
+} from './helper'
 import { parseWasm, type WasmInfo } from './wasm-parser'
 import type { Options } from './options'
 import type { Plugin } from 'rolldown'
@@ -86,6 +92,11 @@ export function wasm(options: Options = {}): Plugin {
         const [file, , params] = parseId(id)
         const buffer = await readFile(file)
         const isInit = params.has('init')
+        const isSync = params.has('sync')
+        const isUrl = params.has('url')
+        if (isSync && isUrl) {
+          this.error('`sync` and `url` parameters cannot be used together.')
+        }
 
         this.addWatchFile(file)
         if (!isInit) {
@@ -112,8 +123,7 @@ export function wasm(options: Options = {}): Plugin {
           const publicFilepath = `${publicPath}${outputFileName}`
 
           // only copy if the file is not marked `sync`, `sync` files are always inlined
-          const query = new URLSearchParams(id.split('?')[1])
-          if (!query.has('sync')) {
+          if (!isSync) {
             copies[file] = {
               filename: outputFileName,
               publicFilepath,
@@ -130,13 +140,22 @@ export function wasm(options: Options = {}): Plugin {
       filter: [include(id(/\.wasm$/, { cleanUrl: true }))],
       handler(code, id) {
         const [file, , params] = parseId(id)
-        const isSync = params.has('sync')
-        const isInit = params.has('init')
 
         const publicFilepath = copies[file]
-          ? `'${copies[file].publicFilepath}'`
+          ? JSON.stringify(copies[file].publicFilepath)
           : null
         let src: string | null
+
+        const isSync = params.has('sync')
+        const isUrl = params.has('url')
+        if (isUrl) {
+          if (!publicFilepath) {
+            this.error(
+              '`url` parameter can only be used with non-inlined files.',
+            )
+          }
+          return `export default ${publicFilepath}`
+        }
 
         if (publicFilepath === null) {
           src = `'${Buffer.from(code, 'binary').toString('base64')}'`
@@ -147,6 +166,7 @@ export function wasm(options: Options = {}): Plugin {
           src = null
         }
 
+        const isInit = params.has('init')
         let codegen = `import { loadWasmModule } from ${JSON.stringify(HELPERS_ID)}
         ${isInit ? 'export default ' : ''}function __wasm_init(imports) {
           return loadWasmModule(${isSync}, ${publicFilepath}, ${src}, imports)
@@ -155,27 +175,28 @@ export function wasm(options: Options = {}): Plugin {
         const mod = this.getModuleInfo(id)!
 
         if (!isInit) {
-          const wasmInfo = mod.meta.wasmInfo as WasmInfo
-          codegen += wasmInfo.imports.map(({ from }, i) => {
-            return `import * as _wasmImport_${i} from ${JSON.stringify(from)};`
+          const { imports, exports } = mod.meta.wasmInfo as WasmInfo
+          codegen += imports.map(({ from }, i) => {
+            return `import * as _wasmImport_${i} from ${JSON.stringify(from)}\n`
           })
 
-          const importObject = wasmInfo.imports.map(({ from, names }, i) => {
-            return {
-              key: JSON.stringify(from),
-              value: names.map((name) => {
-                return {
-                  key: JSON.stringify(name),
-                  value: `_wasmImport_${i}[${JSON.stringify(name)}]`,
-                }
-              }),
-            }
-          })
-          codegen += `const instance = /* @__PURE__ */ await __wasm_init(${codegenSimpleObject(importObject)});`
-
-          codegen += wasmInfo.exports
+          const importObject: SimpleObject = imports.map(
+            ({ from, names }, i) => {
+              return {
+                key: JSON.stringify(from),
+                value: names.map((name) => {
+                  return {
+                    key: JSON.stringify(name),
+                    value: `_wasmImport_${i}[${JSON.stringify(name)}]`,
+                  }
+                }),
+              }
+            },
+          )
+          codegen += `const instance = await __wasm_init(${codegenSimpleObject(importObject)});`
+          codegen += exports
             .map((name) => {
-              return `export ${name === 'default' ? 'default' : `const ${name} =`} /* @__PURE__ */ instance.exports.${name}`
+              return `export ${name === 'default' ? 'default' : `const ${name} =`} instance.exports.${name}`
             })
             .join('\n')
         }
@@ -198,23 +219,4 @@ export function wasm(options: Options = {}): Plugin {
       }
     },
   }
-}
-
-type SimpleObject = SimpleObjectKeyValue[]
-
-interface SimpleObjectKeyValue {
-  key: string
-  value: string | SimpleObject
-}
-
-function codegenSimpleObject(obj: SimpleObject): string {
-  return `{ ${codegenSimpleObjectKeyValue(obj)} }`
-}
-
-function codegenSimpleObjectKeyValue(obj: SimpleObject): string {
-  return obj
-    .map(({ key, value }) => {
-      return `${key}: ${typeof value === 'string' ? value : codegenSimpleObject(value)}`
-    })
-    .join(',\n')
 }

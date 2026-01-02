@@ -30,7 +30,7 @@ export default defineConfig({
 })
 ```
 
-### Importing WASM
+### Importing WASM Modules
 
 ```ts
 import { add } from './add.wasm'
@@ -72,15 +72,31 @@ add(1, 2)
 
 #### Target `web`
 
+##### Node.js
+
 ```ts
+import { readFile } from 'node:fs/promises'
 import init, { add } from 'some-pkg'
-import wasm from 'some-pkg/add_bg.wasm?init' // import wasm file
+import wasmUrl from 'some-pkg/add_bg.wasm?url'
 
 await init({
-  module_or_path: await wasm(),
+  module_or_path: readFile(new URL(wasmUrl, import.meta.url)),
 })
 
-add(1, 2)
+console.log(add(1n, 2n))
+```
+
+##### Browser
+
+```ts
+import init, { add } from 'some-pkg/add.js'
+import wasmUrl from 'some-pkg/add_bg.wasm?url'
+
+await init({
+  module_or_path: wasmUrl,
+})
+
+console.log(add(1n, 2n))
 ```
 
 > [!NOTE]

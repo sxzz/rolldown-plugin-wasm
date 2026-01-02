@@ -9,9 +9,18 @@ describe('rolldown', async () => {
   await testFixtures(
     'init.js',
     async (args, id) => {
-      const { snapshot } = await rolldownBuild(id, [wasm({ maxFileSize: 0 })], {
-        platform: args.platform,
-      })
+      const { snapshot } = await rolldownBuild(
+        id,
+        [
+          wasm({
+            maxFileSize: 0,
+            fileName: 'assets/[hash][extname]',
+          }),
+        ],
+        {
+          platform: args.platform,
+        },
+      )
       await expect(snapshot).toMatchFileSnapshot(
         path.resolve(dirname, '__snapshots__/init/', `${args.platform}.snap`),
       )

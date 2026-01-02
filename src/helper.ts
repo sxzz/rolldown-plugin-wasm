@@ -107,3 +107,17 @@ export function loadWasmModule(sync, filepath, src, imports) {
   }
 }
 `
+
+export type SimpleObject = SimpleObjectKeyValue[]
+export interface SimpleObjectKeyValue {
+  key: string
+  value: string | SimpleObject
+}
+
+export function codegenSimpleObject(obj: SimpleObject): string {
+  return `{ ${obj
+    .map(({ key, value }) => {
+      return `${key}: ${typeof value === 'string' ? value : codegenSimpleObject(value)}`
+    })
+    .join(',\n')} }`
+}

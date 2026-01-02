@@ -17,6 +17,21 @@ var init_sync_default = __wasm_init;
 export { init_sync_default as default };"
 `;
 
+exports[`rolldown > url.js 1`] = `
+"// b62665e669ab1545.wasm
+[BINARY]
+// url.js
+//#region tests/fixtures/add.wasm?url
+var add_default = "b62665e669ab1545.wasm";
+
+//#endregion
+//#region tests/fixtures/url.js
+var url_default = add_default;
+
+//#endregion
+export { url_default as default };"
+`;
+
 exports[`rolldown > wasm-module.js 1`] = `
 "// b62665e669ab1545.wasm
 [BINARY]

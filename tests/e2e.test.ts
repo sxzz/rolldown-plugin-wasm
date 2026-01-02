@@ -44,12 +44,21 @@ async function e2e(
   platform: 'node' | 'browser',
   maxFileSize?: number,
 ) {
-  const { chunks } = await rolldownBuild(entry, [wasm({ maxFileSize })], {
-    platform,
-    treeshake: {
-      moduleSideEffects: false,
+  const { chunks } = await rolldownBuild(
+    entry,
+    [
+      wasm({
+        maxFileSize,
+        fileName: 'assets/[hash][extname]',
+      }),
+    ],
+    {
+      platform,
+      treeshake: {
+        moduleSideEffects: false,
+      },
     },
-  })
+  )
 
   const code = chunks[0].code
   const mod = new SourceTextModule(code, {
@@ -91,8 +100,12 @@ async function e2e(
 
   const init = entry.includes('init')
   const sync = entry.includes('sync')
+  const url = entry.includes('url')
 
-  if (init) {
+  if (url) {
+    expect(exported).a('string')
+    expect(exported).match(/^assets[/\\]\w{16}\.wasm$/)
+  } else if (init) {
     const ret = exported()
     if (sync) {
       expect(ret).a('WebAssembly.Instance')

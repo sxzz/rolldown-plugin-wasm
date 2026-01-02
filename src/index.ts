@@ -68,7 +68,7 @@ export function wasm(options: Options = {}): Plugin {
     load: {
       filter: {
         id: {
-          include: [...toArray(include), HELPERS_ID],
+          include: [HELPERS_ID_RE, ...toArray(include)],
           exclude,
         },
       },

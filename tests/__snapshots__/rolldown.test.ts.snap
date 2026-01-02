@@ -4,7 +4,7 @@ exports[`rolldown > basic.js > platform = browser 1`] = `
 "// b62665e669ab1545.wasm
 [BINARY]
 // basic.js
-//#region ../../../../../wasm-helpers.js
+//#region \\0wasm-helpers.js
 function loadWasmModule(sync, filepath, src, imports) {
 	function instantiateOrCompile(source, imports$1, stream) {
 		const instantiate = stream ? WebAssembly.instantiateStreaming : WebAssembly.instantiate;
@@ -51,7 +51,7 @@ exports[`rolldown > basic.js > platform = neutral 1`] = `
 "// b62665e669ab1545.wasm
 [BINARY]
 // basic.js
-//#region ../../../../../wasm-helpers.js
+//#region \\0wasm-helpers.js
 function loadWasmModule(sync, filepath, src, imports) {
 	function instantiateOrCompile(source, imports$1, stream) {
 		const instantiate = stream ? WebAssembly.instantiateStreaming : WebAssembly.instantiate;
@@ -108,7 +108,7 @@ exports[`rolldown > basic.js > platform = node 1`] = `
 "// b62665e669ab1545.wasm
 [BINARY]
 // basic.js
-//#region ../../../../../wasm-helpers.js
+//#region \\0wasm-helpers.js
 function loadWasmModule(sync, filepath, src, imports) {
 	function instantiateOrCompile(source, imports$1, stream) {
 		const instantiate = stream ? WebAssembly.instantiateStreaming : WebAssembly.instantiate;
@@ -151,7 +151,7 @@ export { basic_default as default };"
 
 exports[`rolldown > sync.js > platform = browser 1`] = `
 "// sync.js
-//#region ../../../../../wasm-helpers.js
+//#region \\0wasm-helpers.js
 function loadWasmModule(sync, filepath, src, imports) {
 	function instantiateOrCompile(source, imports$1, stream) {
 		const instantiate = stream ? WebAssembly.instantiateStreaming : WebAssembly.instantiate;
@@ -196,7 +196,7 @@ export { sync_default as default };"
 
 exports[`rolldown > sync.js > platform = neutral 1`] = `
 "// sync.js
-//#region ../../../../../wasm-helpers.js
+//#region \\0wasm-helpers.js
 function loadWasmModule(sync, filepath, src, imports) {
 	function instantiateOrCompile(source, imports$1, stream) {
 		const instantiate = stream ? WebAssembly.instantiateStreaming : WebAssembly.instantiate;
@@ -251,7 +251,7 @@ export { sync_default as default };"
 
 exports[`rolldown > sync.js > platform = node 1`] = `
 "// sync.js
-//#region ../../../../../wasm-helpers.js
+//#region \\0wasm-helpers.js
 function loadWasmModule(sync, filepath, src, imports) {
 	function instantiateOrCompile(source, imports$1, stream) {
 		const instantiate = stream ? WebAssembly.instantiateStreaming : WebAssembly.instantiate;

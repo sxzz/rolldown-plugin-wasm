@@ -52,6 +52,19 @@ const instance = initSync(imports)
 //    ^? WebAssembly.Instance
 ```
 
+### `wasm-bindgen` Support
+
+```ts
+import init, { add } from 'some-pkg'
+import wasm from 'some-pkg/add_bg.wasm' // import wasm file
+
+await init({
+  module_or_path: await wasm(),
+})
+
+add(1, 2)
+```
+
 ### TypeScript Support
 
 ```jsonc

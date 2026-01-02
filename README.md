@@ -35,7 +35,7 @@ export default defineConfig({
 ```ts
 import { add } from './add.wasm'
 
-console.log(add(1, 2))
+add(1, 2)
 ```
 
 ### Asynchronous Init
@@ -46,7 +46,8 @@ import init from './add.wasm?init'
 const instance = await init(
   imports, // optional
 )
-console.log(instance.exports.add(1, 2))
+
+instance.exports.add(1, 2)
 ```
 
 ### Synchronous Init
@@ -57,7 +58,8 @@ import initSync from './add.wasm?init&sync'
 const instance = initSync(
   imports, // optional
 )
-console.log(instance.exports.add(1, 2))
+
+instance.exports.add(1, 2)
 ```
 
 ### `wasm-bindgen` Support
@@ -83,7 +85,7 @@ await init({
   module_or_path: readFile(new URL(wasmUrl, import.meta.url)),
 })
 
-console.log(add(1n, 2n))
+add(1, 2)
 ```
 
 ##### Browser
@@ -96,7 +98,7 @@ await init({
   module_or_path: wasmUrl,
 })
 
-console.log(add(1n, 2n))
+add(1, 2)
 ```
 
 > [!NOTE]

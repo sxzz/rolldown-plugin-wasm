@@ -1,8 +1,8 @@
 /// <reference types="../types" />
 
 import { expectTypeOf } from 'vitest'
-import init from './hello-world.wasm'
-import initSync from './hello-world.wasm?sync'
+import init from './add.wasm'
+import initSync from './add.wasm?sync'
 
 {
   const module = init()

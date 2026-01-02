@@ -31,7 +31,7 @@ export default defineConfig({
 ### Asynchronous (default)
 
 ```ts
-import init from './hello-world.wasm'
+import init from './add.wasm'
 
 const module = await init()
 //    ^? WebAssembly.Module
@@ -43,7 +43,7 @@ const instance = await init(imports)
 ### Synchronous
 
 ```ts
-import initSync from './hello-world.wasm?sync'
+import initSync from './add.wasm?sync'
 
 const module = initSync()
 //    ^? WebAssembly.Module

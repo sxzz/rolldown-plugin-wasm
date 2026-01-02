@@ -9,7 +9,7 @@ import { rolldownBuild } from '@sxzz/test-utils'
 import { describe, expect, test } from 'vitest'
 import { wasm } from '../src'
 
-const wasmPath = path.resolve(import.meta.dirname, 'fixtures/hello-world.wasm')
+const wasmPath = path.resolve(import.meta.dirname, 'fixtures/add.wasm')
 const atob = (str: string) => Buffer.from(str, 'base64').toString('binary')
 
 describe('e2e', () => {

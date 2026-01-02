@@ -34,14 +34,14 @@ function loadWasmModule(sync, filepath, src, imports) {
 }
 
 //#endregion
-//#region tests/fixtures/hello-world.wasm
-function hello_world_default(imports) {
+//#region tests/fixtures/add.wasm
+function add_default(imports) {
 	return loadWasmModule(false, "b62665e669ab1545.wasm", null, imports);
 }
 
 //#endregion
 //#region tests/fixtures/basic.js
-var basic_default = hello_world_default;
+var basic_default = add_default;
 
 //#endregion
 export { basic_default as default };"
@@ -91,14 +91,14 @@ function loadWasmModule(sync, filepath, src, imports) {
 }
 
 //#endregion
-//#region tests/fixtures/hello-world.wasm
-function hello_world_default(imports) {
+//#region tests/fixtures/add.wasm
+function add_default(imports) {
 	return loadWasmModule(false, "b62665e669ab1545.wasm", null, imports);
 }
 
 //#endregion
 //#region tests/fixtures/basic.js
-var basic_default = hello_world_default;
+var basic_default = add_default;
 
 //#endregion
 export { basic_default as default };"
@@ -136,14 +136,14 @@ function loadWasmModule(sync, filepath, src, imports) {
 }
 
 //#endregion
-//#region tests/fixtures/hello-world.wasm
-function hello_world_default(imports) {
+//#region tests/fixtures/add.wasm
+function add_default(imports) {
 	return loadWasmModule(false, "b62665e669ab1545.wasm", null, imports);
 }
 
 //#endregion
 //#region tests/fixtures/basic.js
-var basic_default = hello_world_default;
+var basic_default = add_default;
 
 //#endregion
 export { basic_default as default };"
@@ -181,14 +181,14 @@ function loadWasmModule(sync, filepath, src, imports) {
 }
 
 //#endregion
-//#region tests/fixtures/hello-world.wasm
-function hello_world_default(imports) {
+//#region tests/fixtures/add.wasm
+function add_default(imports) {
 	return loadWasmModule(true, null, "AGFzbQEAAAABh4CAgAABYAJ/fwF/A4KAgIAAAQAFg4CAgAABABEHkICAgAACBm1lbW9yeQIAA2FkZAAAComAgIAAAQcAIAEgAGoLC7aEgIAAAgBBgIDAAAsIAQAAAAIAAAAAQYiAwAALnAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAkYCAgAAEbmFtZQGGgICAAAEAA2FkZAD+gICAAAlwcm9kdWNlcnMCCGxhbmd1YWdlAQRSdXN0BDIwMTgMcHJvY2Vzc2VkLWJ5AwVydXN0Yx0xLjM0LjEgKGZjNTBmMzI4YiAyMDE5LTA0LTI0KQZ3YWxydXMFMC43LjAMd2FzbS1iaW5kZ2VuEjAuMi40NSAoNmZhNmFmMjNiKQ==", imports);
 }
 
 //#endregion
 //#region tests/fixtures/sync.js
-var sync_default = hello_world_default;
+var sync_default = add_default;
 
 //#endregion
 export { sync_default as default };"
@@ -236,14 +236,14 @@ function loadWasmModule(sync, filepath, src, imports) {
 }
 
 //#endregion
-//#region tests/fixtures/hello-world.wasm
-function hello_world_default(imports) {
+//#region tests/fixtures/add.wasm
+function add_default(imports) {
 	return loadWasmModule(true, null, "AGFzbQEAAAABh4CAgAABYAJ/fwF/A4KAgIAAAQAFg4CAgAABABEHkICAgAACBm1lbW9yeQIAA2FkZAAAComAgIAAAQcAIAEgAGoLC7aEgIAAAgBBgIDAAAsIAQAAAAIAAAAAQYiAwAALnAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAkYCAgAAEbmFtZQGGgICAAAEAA2FkZAD+gICAAAlwcm9kdWNlcnMCCGxhbmd1YWdlAQRSdXN0BDIwMTgMcHJvY2Vzc2VkLWJ5AwVydXN0Yx0xLjM0LjEgKGZjNTBmMzI4YiAyMDE5LTA0LTI0KQZ3YWxydXMFMC43LjAMd2FzbS1iaW5kZ2VuEjAuMi40NSAoNmZhNmFmMjNiKQ==", imports);
 }
 
 //#endregion
 //#region tests/fixtures/sync.js
-var sync_default = hello_world_default;
+var sync_default = add_default;
 
 //#endregion
 export { sync_default as default };"
@@ -279,14 +279,14 @@ function loadWasmModule(sync, filepath, src, imports) {
 }
 
 //#endregion
-//#region tests/fixtures/hello-world.wasm
-function hello_world_default(imports) {
+//#region tests/fixtures/add.wasm
+function add_default(imports) {
 	return loadWasmModule(true, null, "AGFzbQEAAAABh4CAgAABYAJ/fwF/A4KAgIAAAQAFg4CAgAABABEHkICAgAACBm1lbW9yeQIAA2FkZAAAComAgIAAAQcAIAEgAGoLC7aEgIAAAgBBgIDAAAsIAQAAAAIAAAAAQYiAwAALnAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAkYCAgAAEbmFtZQGGgICAAAEAA2FkZAD+gICAAAlwcm9kdWNlcnMCCGxhbmd1YWdlAQRSdXN0BDIwMTgMcHJvY2Vzc2VkLWJ5AwVydXN0Yx0xLjM0LjEgKGZjNTBmMzI4YiAyMDE5LTA0LTI0KQZ3YWxydXMFMC43LjAMd2FzbS1iaW5kZ2VuEjAuMi40NSAoNmZhNmFmMjNiKQ==", imports);
 }
 
 //#endregion
 //#region tests/fixtures/sync.js
-var sync_default = hello_world_default;
+var sync_default = add_default;
 
 //#endregion
 export { sync_default as default };"

@@ -1,2 +1,2 @@
-import wasm from './hello-world.wasm'
+import wasm from './add.wasm'
 export default wasm

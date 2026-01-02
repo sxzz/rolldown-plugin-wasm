@@ -4,7 +4,9 @@
 [![npm downloads][npm-downloads-src]][npm-downloads-href]
 [![Unit Test][unit-test-src]][unit-test-href]
 
-Rolldown plugin for WASM. This plugin is forked from [@rollup/plugin-wasm](https://github.com/rollup/plugins/tree/master/packages/wasm).
+Rolldown plugin for WASM.
+
+This project is heavily referenced from [@rollup/plugin-wasm](https://github.com/rollup/plugins/tree/master/packages/wasm) and [vite-plugin-wasm](https://github.com/Menci/vite-plugin-wasm).
 
 ## Install
 
@@ -28,37 +30,51 @@ export default defineConfig({
 })
 ```
 
-### Asynchronous (default)
+### Importing WASM
 
 ```ts
-import init from './add.wasm'
+import { add } from './add.wasm'
 
-const module = await init()
-//    ^? WebAssembly.Module
-
-const instance = await init(imports)
-//    ^? WebAssembly.Instance
+console.log(add(1, 2))
 ```
 
-### Synchronous
+### Asynchronous Init
 
 ```ts
-import initSync from './add.wasm?sync'
+import init from './add.wasm?init'
 
-const module = initSync()
-//    ^? WebAssembly.Module
+const instance = await init(
+  imports, // optional
+)
+console.log(instance.exports.add(1, 2))
+```
 
-const instance = initSync(imports)
-//    ^? WebAssembly.Instance
+### Synchronous Init
+
+```ts
+import initSync from './add.wasm?init&sync'
+
+const instance = initSync(
+  imports, // optional
+)
+console.log(instance.exports.add(1, 2))
 ```
 
 ### `wasm-bindgen` Support
 
-#### Target `web` (Recommended)
+#### Target `bundler` (default, recommended)
+
+```ts
+import { add } from 'some-pkg'
+
+add(1, 2)
+```
+
+#### Target `web`
 
 ```ts
 import init, { add } from 'some-pkg'
-import wasm from 'some-pkg/add_bg.wasm' // import wasm file
+import wasm from 'some-pkg/add_bg.wasm?init' // import wasm file
 
 await init({
   module_or_path: await wasm(),
@@ -69,20 +85,6 @@ add(1, 2)
 
 > [!NOTE]
 > Other targets such as `nodejs` and `no-modules` are not supported.
-
-#### Target `bundler` (default)
-
-Enable `wasmBindgen` option in the plugin config.
-
-```ts
-// rolldown.config.ts
-import { defineConfig } from 'rolldown'
-import { wasm } from 'rolldown-plugin-wasm'
-
-export default defineConfig({
-  plugins: [wasm({ wasmBindgen: true })],
-})
-```
 
 ### TypeScript Support
 
@@ -108,19 +110,6 @@ export type TargetEnv = 'auto' | 'auto-inline' | 'browser' | 'node'
 
 export interface Options {
   /**
-   * A glob pattern, or array of patterns, which specifies the files in the build the plugin
-   * should operate on.
-   *
-   * @default /\.wasm(\?sync)?$/
-   */
-  include?: Arrayable<string | RegExp>
-  /**
-   * A glob pattern, or array of patterns, which specifies the files in the build the plugin
-   * should _ignore_.
-   * By default no files are ignored.
-   */
-  exclude?: Arrayable<string | RegExp>
-  /**
    * The maximum file size for inline files. If a file exceeds this limit, it will be copied to the destination folder and loaded from a separate file at runtime.
    * If `maxFileSize` is set to `0` all files will be copied.
    * Files specified in `sync` to load synchronously are always inlined, regardless of size.
@@ -141,10 +130,6 @@ export interface Options {
    * Configures what code is emitted to instantiate the Wasm (both inline and separate)
    */
   targetEnv?: TargetEnv
-  /**
-   * Enable `wasm-bindgen` support
-   */
-  wasmBindgen?: boolean
 }
 ```
 
@@ -159,6 +144,8 @@ export interface Options {
 ## License
 
 [MIT](./LICENSE) License © 2026-PRESENT [Kevin Deng](https://github.com/sxzz)
+
+[MIT](https://github.com/Menci/vite-plugin-wasm/blob/main/LICENSE) Copyright (c) 2022 Menci
 
 [MIT](https://github.com/rollup/plugins/blob/master/LICENSE) License Copyright (c) 2019 [RollupJS Plugin Contributors](https://github.com/rollup/plugins/graphs/contributors)
 

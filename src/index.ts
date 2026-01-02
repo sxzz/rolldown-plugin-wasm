@@ -2,8 +2,9 @@ import { Buffer } from 'node:buffer'
 import { createHash } from 'node:crypto'
 import { readFile } from 'node:fs/promises'
 import path from 'node:path'
-import { toArray } from '@antfu/utils'
+import { id, include, or } from 'rolldown/filter'
 import { getHelpersModule, HELPERS_ID, HELPERS_ID_RE } from './helper'
+import { parseWasm, type WasmInfo } from './wasm-parser'
 import type { Options } from './options'
 import type { Plugin } from 'rolldown'
 
@@ -12,17 +13,12 @@ function cleanUrl(url: string): string {
   return url.replace(postfixRE, '')
 }
 
-const RE_SYNC = /\?sync$/
-
 export function wasm(options: Options = {}): Plugin {
   let {
-    include = [/\.wasm(\?sync)?$/],
-    exclude,
     maxFileSize = 14 * 1024,
     publicPath = '',
     targetEnv,
     fileName = '[hash][extname]',
-    wasmBindgen,
   } = options
 
   const copies: Record<
@@ -53,40 +49,45 @@ export function wasm(options: Options = {}): Plugin {
     },
 
     resolveId: {
-      filter: { id: [HELPERS_ID_RE, RE_SYNC] },
+      filter: [
+        include(or(id(HELPERS_ID_RE), id(/\.wasm$/, { cleanUrl: true }))),
+      ],
+
       async handler(id, ...args) {
-        if (RE_SYNC.test(id)) {
-          const resolved = await this.resolve(cleanUrl(id), ...args)
-          if (resolved) {
-            resolved.meta.wasmSync = true
-          }
-          return resolved
+        if (id === HELPERS_ID) {
+          return id
         }
-        return id
+
+        const query = id.split('?')[1]
+        if (!query) return
+
+        const resolved = await this.resolve(cleanUrl(id), ...args)
+        if (resolved) {
+          resolved.id += `?${query}`
+        }
+
+        return resolved
       },
     },
 
     load: {
-      filter: {
-        id: {
-          include: [HELPERS_ID_RE, ...toArray(include)],
-          exclude,
-        },
-      },
+      filter: [
+        include(or(id(HELPERS_ID_RE), id(/\.wasm$/, { cleanUrl: true }))),
+      ],
+
       async handler(id) {
         if (id === HELPERS_ID) {
           return getHelpersModule(targetEnv || 'auto')
         }
 
-        this.addWatchFile(id)
+        const file = cleanUrl(id)
+        const buffer = await readFile(file)
+        const params = new URLSearchParams(id.split('?')[1])
+        const isInit = params.has('init')
 
-        const mod = this.getModuleInfo(id)!
-        const buffer = await readFile(id)
-
-        if (wasmBindgen) {
-          mod.meta.wasmExportNames = WebAssembly.Module.exports(
-            await WebAssembly.compile(buffer),
-          ).map((e) => e.name)
+        this.addWatchFile(file)
+        if (!isInit) {
+          this.getModuleInfo(id)!.meta.wasmInfo = await parseWasm(buffer)
         }
 
         if (targetEnv === 'auto-inline') {
@@ -109,7 +110,8 @@ export function wasm(options: Options = {}): Plugin {
           const publicFilepath = `${publicPath}${outputFileName}`
 
           // only copy if the file is not marked `sync`, `sync` files are always inlined
-          if (!mod.meta.wasmSync) {
+          const query = new URLSearchParams(id.split('?')[1])
+          if (!query.has('sync')) {
             copies[id] = {
               filename: outputFileName,
               publicFilepath,
@@ -123,10 +125,12 @@ export function wasm(options: Options = {}): Plugin {
     },
 
     transform: {
-      filter: { id: { include, exclude } },
+      filter: [include(id(/\.wasm$/, { cleanUrl: true }))],
       handler(code, id) {
-        const mod = this.getModuleInfo(id)!
-        const isSync = !!mod.meta.wasmSync
+        const params = new URLSearchParams(id.split('?')[1])
+        const isSync = params.has('sync')
+        const isInit = params.has('init')
+
         const publicFilepath = copies[id]
           ? `'${copies[id].publicFilepath}'`
           : null
@@ -142,21 +146,37 @@ export function wasm(options: Options = {}): Plugin {
         }
 
         let codegen = `import { loadWasmModule } from ${JSON.stringify(HELPERS_ID)}
-function init(imports) {
-  return loadWasmModule(${isSync}, ${publicFilepath}, ${src}, imports)
-}\n`
+        ${isInit ? 'export default ' : ''}function __wasm_init(imports) {
+          return loadWasmModule(${isSync}, ${publicFilepath}, ${src}, imports)
+        }\n`
 
-        if (wasmBindgen) {
-          const names = mod.meta.wasmExportNames as string[]
-          codegen += 'const instance = /* @__PURE__ */ await init({})\n'
-          codegen += names
+        const mod = this.getModuleInfo(id)!
+
+        if (!isInit) {
+          const wasmInfo = mod.meta.wasmInfo as WasmInfo
+          codegen += wasmInfo.imports.map(({ from }, i) => {
+            return `import * as _wasmImport_${i} from ${JSON.stringify(from)};`
+          })
+
+          const importObject = wasmInfo.imports.map(({ from, names }, i) => {
+            return {
+              key: JSON.stringify(from),
+              value: names.map((name) => {
+                return {
+                  key: JSON.stringify(name),
+                  value: `_wasmImport_${i}[${JSON.stringify(name)}]`,
+                }
+              }),
+            }
+          })
+          codegen += `const instance = /* @__PURE__ */ await __wasm_init(${codegenSimpleObject(importObject)});`
+
+          codegen += wasmInfo.exports
             .map((name) => {
-              return `export const ${name} = instance.exports[${JSON.stringify(name)}]`
+              return `export ${name === 'default' ? 'default' : `const ${name} =`} /* @__PURE__ */ instance.exports.${name}`
             })
             .join('\n')
         }
-
-        codegen += `\nexport default init`
 
         return {
           map: { mappings: '' },
@@ -176,4 +196,23 @@ function init(imports) {
       }
     },
   }
+}
+
+type SimpleObject = SimpleObjectKeyValue[]
+
+interface SimpleObjectKeyValue {
+  key: string
+  value: string | SimpleObject
+}
+
+function codegenSimpleObject(obj: SimpleObject): string {
+  return `{ ${codegenSimpleObjectKeyValue(obj)} }`
+}
+
+function codegenSimpleObjectKeyValue(obj: SimpleObject): string {
+  return obj
+    .map(({ key, value }) => {
+      return `${key}: ${typeof value === 'string' ? value : codegenSimpleObject(value)}`
+    })
+    .join(',\n')
 }

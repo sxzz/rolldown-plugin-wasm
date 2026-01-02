@@ -8,7 +8,7 @@ const { readFile } = process.getBuiltinModule('fs/promises')
 const path = process.getBuiltinModule('path')
 
 return readFile(path.resolve(import.meta.dirname, filepath)).then(
-  (buffer) => instantiateOrCompile(buffer, imports)
+  (buffer) => instantiate(buffer, imports)
 )
 `
 
@@ -18,7 +18,7 @@ buf = Buffer.from(src, 'base64')
 `
 
 const browserFilePath = `
-return instantiateOrCompile(fetch(filepath), imports, true);
+return instantiate(fetch(filepath), imports, true);
 `
 
 const browserDecode = `
@@ -92,24 +92,18 @@ const envModule = (env: TargetEnv) => {
 
 export const getHelpersModule = (env: TargetEnv) => `
 export function loadWasmModule(sync, filepath, src, imports) {
-  function instantiateOrCompile(source, imports, stream) {
+  function instantiate(source, imports, stream) {
     const instantiate = stream ? WebAssembly.instantiateStreaming : WebAssembly.instantiate;
-    const compile = stream ? WebAssembly.compileStreaming : WebAssembly.compile;
-
-    if (imports) {
-      return instantiate(source, imports).then(({ instance }) => instance)
-    } else {
-      return compile(source)
-    }
+    return instantiate(source, imports).then(({ instance }) => instance)
   }
 
   ${envModule(env)}
 
   if (sync) {
     const mod = new WebAssembly.Module(buf)
-    return imports ? new WebAssembly.Instance(mod, imports) : mod
+    return new WebAssembly.Instance(mod, imports)
   } else {
-    return instantiateOrCompile(buf, imports)
+    return instantiate(buf, imports)
   }
 }
 `

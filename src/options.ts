@@ -1,5 +1,3 @@
-import type { Arrayable } from '@antfu/utils'
-
 /**
  * - `"auto"` will determine the environment at runtime and invoke the correct methods accordingly
  * - `"auto-inline"` always inlines the WASM and will decode it according to the environment
@@ -9,19 +7,6 @@ import type { Arrayable } from '@antfu/utils'
 export type TargetEnv = 'auto' | 'auto-inline' | 'browser' | 'node'
 
 export interface Options {
-  /**
-   * A glob pattern, or array of patterns, which specifies the files in the build the plugin
-   * should operate on.
-   *
-   * @default /\.wasm(\?sync)?$/
-   */
-  include?: Arrayable<string | RegExp>
-  /**
-   * A glob pattern, or array of patterns, which specifies the files in the build the plugin
-   * should _ignore_.
-   * By default no files are ignored.
-   */
-  exclude?: Arrayable<string | RegExp>
   /**
    * The maximum file size for inline files. If a file exceeds this limit, it will be copied to the destination folder and loaded from a separate file at runtime.
    * If `maxFileSize` is set to `0` all files will be copied.
@@ -43,8 +28,4 @@ export interface Options {
    * Configures what code is emitted to instantiate the Wasm (both inline and separate)
    */
   targetEnv?: TargetEnv
-  /**
-   * Enable wasm-bindgen support
-   */
-  wasmBindgen?: boolean
 }

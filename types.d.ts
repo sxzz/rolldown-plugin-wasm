@@ -1,13 +1,13 @@
-declare module '*.wasm' {
-  export default function (
-    imports: WebAssembly.Imports,
-  ): Promise<WebAssembly.Instance>
-
-  export default function wasm(imports?: undefined): Promise<WebAssembly.Module>
+// wasm?init
+declare module '*.wasm?init' {
+  const initWasm: (
+    imports?: WebAssembly.Imports,
+  ) => Promise<WebAssembly.Instance>
+  export default initWasm
 }
-declare module '*.wasm?sync' {
-  export default function wasm(
-    imports: WebAssembly.Imports,
-  ): WebAssembly.Instance
-  export default function wasm(imports?: undefined): WebAssembly.Module
+
+// wasm?init&sync
+declare module '*.wasm?init&sync' {
+  const initWasm: (imports?: WebAssembly.Imports) => WebAssembly.Instance
+  export default initWasm
 }

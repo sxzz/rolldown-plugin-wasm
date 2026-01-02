@@ -5,7 +5,7 @@ import { readFile } from 'node:fs/promises'
 import path from 'node:path'
 import process from 'node:process'
 import { createContext, SourceTextModule } from 'node:vm'
-import { rolldownBuild } from '@sxzz/test-utils'
+import { rolldownBuild, testFixtures } from '@sxzz/test-utils'
 import { describe, expect, test } from 'vitest'
 import { wasm } from '../src'
 
@@ -13,44 +13,43 @@ const wasmPath = path.resolve(import.meta.dirname, 'fixtures/add.wasm')
 const atob = (str: string) => Buffer.from(str, 'base64').toString('binary')
 
 describe('e2e', () => {
-  describe.each(['node', 'browser'] as const)('platform: %s', (platform) => {
-    test.each([true, false] as const)('sync = %s', async (sync) => {
-      await e2e(platform, sync)
-    })
+  describe.each(['node', 'browser'] as const)(
+    'platform: %s',
+    async (platform) => {
+      await testFixtures(
+        '*.js',
+        async (args, id) => {
+          await e2e(id, platform, 0)
+        },
+        {
+          cwd: path.resolve(import.meta.dirname, 'fixtures'),
+          promise: true,
+          snapshot: false,
+        },
+      )
 
-    test('maxFileSize = 0', async () => {
-      await e2e(platform, false, 0)
-    })
-
-    test('with wasmBindgen', async () => {
-      await e2e(platform, false, undefined, true)
-    })
-  })
+      test('maxFileSize = 0', async () => {
+        await e2e(
+          path.resolve(import.meta.dirname, 'fixtures/init.js'),
+          platform,
+          0,
+        )
+      })
+    },
+  )
 })
 
 async function e2e(
+  entry: string,
   platform: 'node' | 'browser',
-  sync: boolean,
   maxFileSize?: number,
-  wasmBindgen?: boolean,
 ) {
-  const { chunks } = await rolldownBuild(
-    path.resolve(
-      import.meta.dirname,
-      sync
-        ? 'fixtures/sync.js'
-        : wasmBindgen
-          ? 'fixtures/wasm-bindgen.js'
-          : 'fixtures/basic.js',
-    ),
-    [wasm({ maxFileSize, wasmBindgen })],
-    {
-      platform,
-      treeshake: {
-        moduleSideEffects: false,
-      },
+  const { chunks } = await rolldownBuild(entry, [wasm({ maxFileSize })], {
+    platform,
+    treeshake: {
+      moduleSideEffects: false,
     },
-  )
+  })
 
   const code = chunks[0].code
   const mod = new SourceTextModule(code, {
@@ -90,32 +89,21 @@ async function e2e(
   await mod.evaluate()
   const exported = (mod.namespace as any).default
 
-  let init: (imports?: any) => any
-  if (wasmBindgen) {
-    const { add } = (mod.namespace as any).default
-    expect(add(1, 2)).toBe(3)
-    init = exported.default
+  const init = entry.includes('init')
+  const sync = entry.includes('sync')
+
+  if (init) {
+    const ret = exported()
+    if (sync) {
+      expect(ret).a('WebAssembly.Instance')
+    } else {
+      await expect(ret).resolves.a('WebAssembly.Instance')
+    }
+
+    const instance: WebAssembly.Instance = await ret
+    expect((instance.exports as any).add(1, 2)).toBe(3)
   } else {
-    init = exported
-  }
-
-  {
-    // module
-    const ret = init()
-    expect(ret).a(sync ? 'WebAssembly.Module' : 'Promise')
-
-    const wasmModule: WebAssembly.Module = await ret
-    const instance = await WebAssembly.instantiate(wasmModule)
-    expect((instance.exports as any).add(1, 2)).toBe(3)
-  }
-
-  {
-    // instance
-    const ret = init({})
-    expect(ret).a(sync ? 'WebAssembly.Instance' : 'Promise')
-
-    const instance = await ret
-    expect(instance).a('WebAssembly.Instance')
-    expect((instance.exports as any).add(1, 2)).toBe(3)
+    expect(Object.keys(exported)).toEqual(['add', 'memory'])
+    expect(exported.add(1, 2)).toBe(3)
   }
 }

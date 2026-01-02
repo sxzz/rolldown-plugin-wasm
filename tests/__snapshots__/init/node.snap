@@ -1,0 +1,37 @@
+// b62665e669ab1545.wasm?init
+[BINARY]
+// init.js
+//#region \0wasm-helpers.js
+function loadWasmModule(sync, filepath, src, imports) {
+	function instantiate(source, imports$1, stream) {
+		const instantiate$1 = stream ? WebAssembly.instantiateStreaming : WebAssembly.instantiate;
+		return instantiate$1(source, imports$1).then(({ instance }) => instance);
+	}
+	let buf = null;
+	if (filepath) {
+		const { readFile } = process.getBuiltinModule("fs/promises");
+		const path = process.getBuiltinModule("path");
+		return readFile(path.resolve(import.meta.dirname, filepath)).then((buffer) => instantiate(buffer, imports));
+	}
+	const { Buffer } = process.getBuiltinModule("buffer");
+	buf = Buffer.from(src, "base64");
+	if (sync) {
+		const mod = new WebAssembly.Module(buf);
+		return new WebAssembly.Instance(mod, imports);
+	} else {
+		return instantiate(buf, imports);
+	}
+}
+
+//#endregion
+//#region tests/fixtures/add.wasm?init
+function __wasm_init(imports) {
+	return loadWasmModule(false, "b62665e669ab1545.wasm?init", null, imports);
+}
+
+//#endregion
+//#region tests/fixtures/init.js
+var init_default = __wasm_init;
+
+//#endregion
+export { init_default as default };

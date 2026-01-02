@@ -54,6 +54,8 @@ const instance = initSync(imports)
 
 ### `wasm-bindgen` Support
 
+#### Target `web` (Recommended)
+
 ```ts
 import init, { add } from 'some-pkg'
 import wasm from 'some-pkg/add_bg.wasm' // import wasm file
@@ -63,6 +65,23 @@ await init({
 })
 
 add(1, 2)
+```
+
+> [!NOTE]
+> Other targets such as `nodejs` and `no-modules` are not supported.
+
+#### Target `bundler` (default)
+
+Enable `wasmBindgen` option in the plugin config.
+
+```ts
+// rolldown.config.ts
+import { defineConfig } from 'rolldown'
+import { wasm } from 'rolldown-plugin-wasm'
+
+export default defineConfig({
+  plugins: [wasm({ wasmBindgen: true })],
+})
 ```
 
 ### TypeScript Support
@@ -122,6 +141,10 @@ export interface Options {
    * Configures what code is emitted to instantiate the Wasm (both inline and separate)
    */
   targetEnv?: TargetEnv
+  /**
+   * Enable `wasm-bindgen` support
+   */
+  wasmBindgen?: boolean
 }
 ```
 

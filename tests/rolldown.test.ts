@@ -9,9 +9,16 @@ describe('rolldown', async () => {
   await testFixtures(
     '*.js',
     async (args, id) => {
-      const { snapshot } = await rolldownBuild(id, [wasm({ maxFileSize: 0 })], {
-        platform: args.platform,
-      })
+      const { snapshot } = await rolldownBuild(
+        id,
+        [
+          wasm({
+            maxFileSize: 0,
+            wasmBindgen: id.includes('wasm-bindgen'),
+          }),
+        ],
+        { platform: args.platform },
+      )
       return snapshot
     },
     {

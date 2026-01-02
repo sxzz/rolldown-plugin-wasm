@@ -22,6 +22,7 @@ export function wasm(options: Options = {}): Plugin {
     publicPath = '',
     targetEnv,
     fileName = '[hash][extname]',
+    wasmBindgen,
   } = options
 
   const copies: Record<
@@ -79,7 +80,15 @@ export function wasm(options: Options = {}): Plugin {
 
         this.addWatchFile(id)
 
+        const mod = this.getModuleInfo(id)!
         const buffer = await readFile(id)
+
+        if (wasmBindgen) {
+          mod.meta.wasmExportNames = WebAssembly.Module.exports(
+            await WebAssembly.compile(buffer),
+          ).map((e) => e.name)
+        }
+
         if (targetEnv === 'auto-inline') {
           return buffer.toString('binary')
         }
@@ -100,8 +109,7 @@ export function wasm(options: Options = {}): Plugin {
           const publicFilepath = `${publicPath}${outputFileName}`
 
           // only copy if the file is not marked `sync`, `sync` files are always inlined
-          const isSync = !!this.getModuleInfo(id)?.meta?.wasmSync
-          if (!isSync) {
+          if (!mod.meta.wasmSync) {
             copies[id] = {
               filename: outputFileName,
               publicFilepath,
@@ -117,7 +125,8 @@ export function wasm(options: Options = {}): Plugin {
     transform: {
       filter: { id: { include, exclude } },
       handler(code, id) {
-        const isSync = !!this.getModuleInfo(id)?.meta?.wasmSync
+        const mod = this.getModuleInfo(id)!
+        const isSync = !!mod.meta.wasmSync
         const publicFilepath = copies[id]
           ? `'${copies[id].publicFilepath}'`
           : null
@@ -132,12 +141,26 @@ export function wasm(options: Options = {}): Plugin {
           src = null
         }
 
+        let codegen = `import { loadWasmModule } from ${JSON.stringify(HELPERS_ID)}
+function init(imports) {
+  return loadWasmModule(${isSync}, ${publicFilepath}, ${src}, imports)
+}\n`
+
+        if (wasmBindgen) {
+          const names = mod.meta.wasmExportNames as string[]
+          codegen += 'const instance = /* @__PURE__ */ await init({})\n'
+          codegen += names
+            .map((name) => {
+              return `export const ${name} = instance.exports[${JSON.stringify(name)}]`
+            })
+            .join('\n')
+        }
+
+        codegen += `\nexport default init`
+
         return {
-          map: {
-            mappings: '',
-          },
-          code: `import { loadWasmModule } from ${JSON.stringify(HELPERS_ID)};
-export default function(imports){return loadWasmModule(${isSync}, ${publicFilepath}, ${src}, imports)}`,
+          map: { mappings: '' },
+          code: codegen,
         }
       },
     },

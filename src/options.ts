@@ -43,4 +43,8 @@ export interface Options {
    * Configures what code is emitted to instantiate the Wasm (both inline and separate)
    */
   targetEnv?: TargetEnv
+  /**
+   * Enable wasm-bindgen support
+   */
+  wasmBindgen?: boolean
 }

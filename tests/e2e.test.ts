@@ -21,6 +21,10 @@ describe('e2e', () => {
     test('maxFileSize = 0', async () => {
       await e2e(platform, false, 0)
     })
+
+    test('with wasmBindgen', async () => {
+      await e2e(platform, false, undefined, true)
+    })
   })
 })
 
@@ -28,17 +32,28 @@ async function e2e(
   platform: 'node' | 'browser',
   sync: boolean,
   maxFileSize?: number,
+  wasmBindgen?: boolean,
 ) {
   const { chunks } = await rolldownBuild(
     path.resolve(
       import.meta.dirname,
-      sync ? 'fixtures/sync.js' : 'fixtures/basic.js',
+      sync
+        ? 'fixtures/sync.js'
+        : wasmBindgen
+          ? 'fixtures/wasm-bindgen.js'
+          : 'fixtures/basic.js',
     ),
-    [wasm({ maxFileSize })],
-    { platform },
+    [wasm({ maxFileSize, wasmBindgen })],
+    {
+      platform,
+      treeshake: {
+        moduleSideEffects: false,
+      },
+    },
   )
 
-  const mod = new SourceTextModule(chunks[0].code, {
+  const code = chunks[0].code
+  const mod = new SourceTextModule(code, {
     context: createContext({
       atob: platform === 'browser' ? atob : undefined,
       fetch:
@@ -69,14 +84,24 @@ async function e2e(
       meta.dirname = process.cwd()
     },
   })
-  await mod.link(() => {
-    throw new Error('No imports expected')
+  await mod.link((spec) => {
+    throw new Error(`No imports expected: ${spec}`)
   })
   await mod.evaluate()
+  const exported = (mod.namespace as any).default
+
+  let init: (imports?: any) => any
+  if (wasmBindgen) {
+    const { add } = (mod.namespace as any).default
+    expect(add(1, 2)).toBe(3)
+    init = exported.default
+  } else {
+    init = exported
+  }
 
   {
     // module
-    const ret = (mod.namespace as any).default()
+    const ret = init()
     expect(ret).a(sync ? 'WebAssembly.Module' : 'Promise')
 
     const wasmModule: WebAssembly.Module = await ret
@@ -86,7 +111,7 @@ async function e2e(
 
   {
     // instance
-    const ret = (mod.namespace as any).default({})
+    const ret = init({})
     expect(ret).a(sync ? 'WebAssembly.Instance' : 'Promise')
 
     const instance = await ret

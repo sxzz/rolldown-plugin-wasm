@@ -74,7 +74,7 @@ if (isNode) {
 }
 `
 
-const envModule = (env: TargetEnv) => {
+function envModule(env: TargetEnv) {
   switch (env) {
     case 'auto':
       return autoModule

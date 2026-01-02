@@ -94,6 +94,7 @@ export function wasm(options: Options = {}): Plugin {
 
         const [file, , params] = parseId(id)
         const buffer = await readFile(file)
+
         const isInit = params.has('init')
         const isSync = params.has('sync')
         const isUrl = params.has('url')
@@ -106,11 +107,15 @@ export function wasm(options: Options = {}): Plugin {
           this.getModuleInfo(id)!.meta.wasmInfo = await parseWasm(buffer)
         }
 
-        if (targetEnv === 'auto-inline') {
-          return buffer.toString('binary')
+        function shouldInline() {
+          if (isUrl) return false
+          if (isSync) return true
+          if (targetEnv === 'auto-inline') return true
+          if (maxFileSize === 0) return false
+          return buffer.length <= maxFileSize
         }
 
-        if ((maxFileSize && buffer.length > maxFileSize) || maxFileSize === 0) {
+        if (!shouldInline()) {
           const hash = createHash('sha1')
             .update(buffer)
             .digest('hex')
@@ -125,13 +130,10 @@ export function wasm(options: Options = {}): Plugin {
 
           const publicFilepath = `${publicPath}${outputFileName}`
 
-          // only copy if the file is not marked `sync`, `sync` files are always inlined
-          if (!isSync) {
-            copies[file] = {
-              filename: outputFileName,
-              publicFilepath,
-              buffer,
-            }
+          copies[file] = {
+            filename: outputFileName,
+            publicFilepath,
+            buffer,
           }
         }
 

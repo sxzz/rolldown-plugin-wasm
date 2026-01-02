@@ -173,32 +173,30 @@ export function wasm(options: Options = {}): Plugin {
 
         const isInit = params.has('init')
         let codegen = `import { loadWasmModule } from ${JSON.stringify(HELPERS_ID)}
-        ${isInit ? 'export default ' : ''}function __wasm_init(imports) {
-          return loadWasmModule(${isSync}, ${publicFilepath}, ${src}, imports)
-        }\n`
+${isInit ? 'export default ' : ''}function __wasm_init(imports) {
+  return loadWasmModule(${isSync}, ${publicFilepath}, ${src}, imports)
+}\n`
 
         const mod = this.getModuleInfo(id)!
 
         if (!isInit) {
           const { imports, exports } = mod.meta.wasmInfo as WasmInfo
-          codegen += imports.map(({ from }, i) => {
+          codegen += imports.map(([from], i) => {
             return `import * as _wasmImport_${i} from ${JSON.stringify(from)}\n`
           })
 
-          const importObject: SimpleObject = imports.map(
-            ({ from, names }, i) => {
-              return {
-                key: JSON.stringify(from),
-                value: names.map((name) => {
-                  return {
-                    key: JSON.stringify(name),
-                    value: `_wasmImport_${i}[${JSON.stringify(name)}]`,
-                  }
-                }),
-              }
-            },
-          )
-          codegen += `const instance = await __wasm_init(${codegenSimpleObject(importObject)});`
+          const importObject: SimpleObject = imports.map(([from, names], i) => {
+            return {
+              key: JSON.stringify(from),
+              value: names.map((name) => {
+                return {
+                  key: JSON.stringify(name),
+                  value: `_wasmImport_${i}[${JSON.stringify(name)}]`,
+                }
+              }),
+            }
+          })
+          codegen += `const instance = await __wasm_init(${codegenSimpleObject(importObject)})\n`
           codegen += exports
             .map((name) => {
               return `export ${name === 'default' ? 'default' : `const ${name} =`} instance.exports.${name}`

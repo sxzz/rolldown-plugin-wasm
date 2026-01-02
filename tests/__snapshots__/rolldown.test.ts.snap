@@ -1,0 +1,293 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`rolldown > basic.js > platform = browser 1`] = `
+"// b62665e669ab1545.wasm
+[BINARY]
+// basic.js
+//#region ../../../../../wasm-helpers.js
+function loadWasmModule(sync, filepath, src, imports) {
+	function instantiateOrCompile(source, imports$1, stream) {
+		const instantiate = stream ? WebAssembly.instantiateStreaming : WebAssembly.instantiate;
+		const compile = stream ? WebAssembly.compileStreaming : WebAssembly.compile;
+		if (imports$1) {
+			return instantiate(source, imports$1).then(({ instance }) => instance);
+		} else {
+			return compile(source);
+		}
+	}
+	let buf = null;
+	if (filepath) {
+		return instantiateOrCompile(fetch(filepath), imports, true);
+	}
+	const raw = globalThis.atob(src);
+	const len = raw.length;
+	buf = new Uint8Array(new ArrayBuffer(len));
+	for (let i = 0; i < len; i++) {
+		buf[i] = raw.charCodeAt(i);
+	}
+	if (sync) {
+		const mod = new WebAssembly.Module(buf);
+		return imports ? new WebAssembly.Instance(mod, imports) : mod;
+	} else {
+		return instantiateOrCompile(buf, imports);
+	}
+}
+
+//#endregion
+//#region tests/fixtures/hello-world.wasm
+function hello_world_default(imports) {
+	return loadWasmModule(false, "b62665e669ab1545.wasm", null, imports);
+}
+
+//#endregion
+//#region tests/fixtures/basic.js
+var basic_default = hello_world_default;
+
+//#endregion
+export { basic_default as default };"
+`;
+
+exports[`rolldown > basic.js > platform = neutral 1`] = `
+"// b62665e669ab1545.wasm
+[BINARY]
+// basic.js
+//#region ../../../../../wasm-helpers.js
+function loadWasmModule(sync, filepath, src, imports) {
+	function instantiateOrCompile(source, imports$1, stream) {
+		const instantiate = stream ? WebAssembly.instantiateStreaming : WebAssembly.instantiate;
+		const compile = stream ? WebAssembly.compileStreaming : WebAssembly.compile;
+		if (imports$1) {
+			return instantiate(source, imports$1).then(({ instance }) => instance);
+		} else {
+			return compile(source);
+		}
+	}
+	let buf = null;
+	const isNode = typeof process !== "undefined" && process.versions != null && process.versions.node != null;
+	if (filepath && isNode) {
+		const { readFile } = process.getBuiltinModule("fs/promises");
+		const path = process.getBuiltinModule("path");
+		return readFile(path.resolve(import.meta.dirname, filepath)).then((buffer) => instantiateOrCompile(buffer, imports));
+	} else if (filepath) {
+		return instantiateOrCompile(fetch(filepath), imports, true);
+	}
+	if (isNode) {
+		const { Buffer } = process.getBuiltinModule("buffer");
+		buf = Buffer.from(src, "base64");
+	} else {
+		const raw = globalThis.atob(src);
+		const len = raw.length;
+		buf = new Uint8Array(new ArrayBuffer(len));
+		for (let i = 0; i < len; i++) {
+			buf[i] = raw.charCodeAt(i);
+		}
+	}
+	if (sync) {
+		const mod = new WebAssembly.Module(buf);
+		return imports ? new WebAssembly.Instance(mod, imports) : mod;
+	} else {
+		return instantiateOrCompile(buf, imports);
+	}
+}
+
+//#endregion
+//#region tests/fixtures/hello-world.wasm
+function hello_world_default(imports) {
+	return loadWasmModule(false, "b62665e669ab1545.wasm", null, imports);
+}
+
+//#endregion
+//#region tests/fixtures/basic.js
+var basic_default = hello_world_default;
+
+//#endregion
+export { basic_default as default };"
+`;
+
+exports[`rolldown > basic.js > platform = node 1`] = `
+"// b62665e669ab1545.wasm
+[BINARY]
+// basic.js
+//#region ../../../../../wasm-helpers.js
+function loadWasmModule(sync, filepath, src, imports) {
+	function instantiateOrCompile(source, imports$1, stream) {
+		const instantiate = stream ? WebAssembly.instantiateStreaming : WebAssembly.instantiate;
+		const compile = stream ? WebAssembly.compileStreaming : WebAssembly.compile;
+		if (imports$1) {
+			return instantiate(source, imports$1).then(({ instance }) => instance);
+		} else {
+			return compile(source);
+		}
+	}
+	let buf = null;
+	if (filepath) {
+		const { readFile } = process.getBuiltinModule("fs/promises");
+		const path = process.getBuiltinModule("path");
+		return readFile(path.resolve(import.meta.dirname, filepath)).then((buffer) => instantiateOrCompile(buffer, imports));
+	}
+	const { Buffer } = process.getBuiltinModule("buffer");
+	buf = Buffer.from(src, "base64");
+	if (sync) {
+		const mod = new WebAssembly.Module(buf);
+		return imports ? new WebAssembly.Instance(mod, imports) : mod;
+	} else {
+		return instantiateOrCompile(buf, imports);
+	}
+}
+
+//#endregion
+//#region tests/fixtures/hello-world.wasm
+function hello_world_default(imports) {
+	return loadWasmModule(false, "b62665e669ab1545.wasm", null, imports);
+}
+
+//#endregion
+//#region tests/fixtures/basic.js
+var basic_default = hello_world_default;
+
+//#endregion
+export { basic_default as default };"
+`;
+
+exports[`rolldown > sync.js > platform = browser 1`] = `
+"// sync.js
+//#region ../../../../../wasm-helpers.js
+function loadWasmModule(sync, filepath, src, imports) {
+	function instantiateOrCompile(source, imports$1, stream) {
+		const instantiate = stream ? WebAssembly.instantiateStreaming : WebAssembly.instantiate;
+		const compile = stream ? WebAssembly.compileStreaming : WebAssembly.compile;
+		if (imports$1) {
+			return instantiate(source, imports$1).then(({ instance }) => instance);
+		} else {
+			return compile(source);
+		}
+	}
+	let buf = null;
+	if (filepath) {
+		return instantiateOrCompile(fetch(filepath), imports, true);
+	}
+	const raw = globalThis.atob(src);
+	const len = raw.length;
+	buf = new Uint8Array(new ArrayBuffer(len));
+	for (let i = 0; i < len; i++) {
+		buf[i] = raw.charCodeAt(i);
+	}
+	if (sync) {
+		const mod = new WebAssembly.Module(buf);
+		return imports ? new WebAssembly.Instance(mod, imports) : mod;
+	} else {
+		return instantiateOrCompile(buf, imports);
+	}
+}
+
+//#endregion
+//#region tests/fixtures/hello-world.wasm
+function hello_world_default(imports) {
+	return loadWasmModule(true, null, "AGFzbQEAAAABh4CAgAABYAJ/fwF/A4KAgIAAAQAFg4CAgAABABEHkICAgAACBm1lbW9yeQIAA2FkZAAAComAgIAAAQcAIAEgAGoLC7aEgIAAAgBBgIDAAAsIAQAAAAIAAAAAQYiAwAALnAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAkYCAgAAEbmFtZQGGgICAAAEAA2FkZAD+gICAAAlwcm9kdWNlcnMCCGxhbmd1YWdlAQRSdXN0BDIwMTgMcHJvY2Vzc2VkLWJ5AwVydXN0Yx0xLjM0LjEgKGZjNTBmMzI4YiAyMDE5LTA0LTI0KQZ3YWxydXMFMC43LjAMd2FzbS1iaW5kZ2VuEjAuMi40NSAoNmZhNmFmMjNiKQ==", imports);
+}
+
+//#endregion
+//#region tests/fixtures/sync.js
+var sync_default = hello_world_default;
+
+//#endregion
+export { sync_default as default };"
+`;
+
+exports[`rolldown > sync.js > platform = neutral 1`] = `
+"// sync.js
+//#region ../../../../../wasm-helpers.js
+function loadWasmModule(sync, filepath, src, imports) {
+	function instantiateOrCompile(source, imports$1, stream) {
+		const instantiate = stream ? WebAssembly.instantiateStreaming : WebAssembly.instantiate;
+		const compile = stream ? WebAssembly.compileStreaming : WebAssembly.compile;
+		if (imports$1) {
+			return instantiate(source, imports$1).then(({ instance }) => instance);
+		} else {
+			return compile(source);
+		}
+	}
+	let buf = null;
+	const isNode = typeof process !== "undefined" && process.versions != null && process.versions.node != null;
+	if (filepath && isNode) {
+		const { readFile } = process.getBuiltinModule("fs/promises");
+		const path = process.getBuiltinModule("path");
+		return readFile(path.resolve(import.meta.dirname, filepath)).then((buffer) => instantiateOrCompile(buffer, imports));
+	} else if (filepath) {
+		return instantiateOrCompile(fetch(filepath), imports, true);
+	}
+	if (isNode) {
+		const { Buffer } = process.getBuiltinModule("buffer");
+		buf = Buffer.from(src, "base64");
+	} else {
+		const raw = globalThis.atob(src);
+		const len = raw.length;
+		buf = new Uint8Array(new ArrayBuffer(len));
+		for (let i = 0; i < len; i++) {
+			buf[i] = raw.charCodeAt(i);
+		}
+	}
+	if (sync) {
+		const mod = new WebAssembly.Module(buf);
+		return imports ? new WebAssembly.Instance(mod, imports) : mod;
+	} else {
+		return instantiateOrCompile(buf, imports);
+	}
+}
+
+//#endregion
+//#region tests/fixtures/hello-world.wasm
+function hello_world_default(imports) {
+	return loadWasmModule(true, null, "AGFzbQEAAAABh4CAgAABYAJ/fwF/A4KAgIAAAQAFg4CAgAABABEHkICAgAACBm1lbW9yeQIAA2FkZAAAComAgIAAAQcAIAEgAGoLC7aEgIAAAgBBgIDAAAsIAQAAAAIAAAAAQYiAwAALnAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAkYCAgAAEbmFtZQGGgICAAAEAA2FkZAD+gICAAAlwcm9kdWNlcnMCCGxhbmd1YWdlAQRSdXN0BDIwMTgMcHJvY2Vzc2VkLWJ5AwVydXN0Yx0xLjM0LjEgKGZjNTBmMzI4YiAyMDE5LTA0LTI0KQZ3YWxydXMFMC43LjAMd2FzbS1iaW5kZ2VuEjAuMi40NSAoNmZhNmFmMjNiKQ==", imports);
+}
+
+//#endregion
+//#region tests/fixtures/sync.js
+var sync_default = hello_world_default;
+
+//#endregion
+export { sync_default as default };"
+`;
+
+exports[`rolldown > sync.js > platform = node 1`] = `
+"// sync.js
+//#region ../../../../../wasm-helpers.js
+function loadWasmModule(sync, filepath, src, imports) {
+	function instantiateOrCompile(source, imports$1, stream) {
+		const instantiate = stream ? WebAssembly.instantiateStreaming : WebAssembly.instantiate;
+		const compile = stream ? WebAssembly.compileStreaming : WebAssembly.compile;
+		if (imports$1) {
+			return instantiate(source, imports$1).then(({ instance }) => instance);
+		} else {
+			return compile(source);
+		}
+	}
+	let buf = null;
+	if (filepath) {
+		const { readFile } = process.getBuiltinModule("fs/promises");
+		const path = process.getBuiltinModule("path");
+		return readFile(path.resolve(import.meta.dirname, filepath)).then((buffer) => instantiateOrCompile(buffer, imports));
+	}
+	const { Buffer } = process.getBuiltinModule("buffer");
+	buf = Buffer.from(src, "base64");
+	if (sync) {
+		const mod = new WebAssembly.Module(buf);
+		return imports ? new WebAssembly.Instance(mod, imports) : mod;
+	} else {
+		return instantiateOrCompile(buf, imports);
+	}
+}
+
+//#endregion
+//#region tests/fixtures/hello-world.wasm
+function hello_world_default(imports) {
+	return loadWasmModule(true, null, "AGFzbQEAAAABh4CAgAABYAJ/fwF/A4KAgIAAAQAFg4CAgAABABEHkICAgAACBm1lbW9yeQIAA2FkZAAAComAgIAAAQcAIAEgAGoLC7aEgIAAAgBBgIDAAAsIAQAAAAIAAAAAQYiAwAALnAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAkYCAgAAEbmFtZQGGgICAAAEAA2FkZAD+gICAAAlwcm9kdWNlcnMCCGxhbmd1YWdlAQRSdXN0BDIwMTgMcHJvY2Vzc2VkLWJ5AwVydXN0Yx0xLjM0LjEgKGZjNTBmMzI4YiAyMDE5LTA0LTI0KQZ3YWxydXMFMC43LjAMd2FzbS1iaW5kZ2VuEjAuMi40NSAoNmZhNmFmMjNiKQ==", imports);
+}
+
+//#endregion
+//#region tests/fixtures/sync.js
+var sync_default = hello_world_default;
+
+//#endregion
+export { sync_default as default };"
+`;

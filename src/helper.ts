@@ -1,7 +1,6 @@
 import type { TargetEnv } from './options'
 
 export const HELPERS_ID: string = '\0wasm-helpers.js'
-export const HELPERS_ID_RE: RegExp = /\0wasm-helpers\.js$/
 
 const nodeFilePath = `
 const { readFile } = process.getBuiltinModule('fs/promises')

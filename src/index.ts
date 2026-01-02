@@ -2,12 +2,11 @@ import { Buffer } from 'node:buffer'
 import { createHash } from 'node:crypto'
 import { readFile } from 'node:fs/promises'
 import path from 'node:path'
-import { id, include, or } from 'rolldown/filter'
+import { exactRegex, id, include, or } from 'rolldown/filter'
 import {
   codegenSimpleObject,
   getHelpersModule,
   HELPERS_ID,
-  HELPERS_ID_RE,
   type SimpleObject,
 } from './helper'
 import { parseWasm, type WasmInfo } from './wasm-parser'
@@ -59,7 +58,9 @@ export function wasm(options: Options = {}): Plugin {
 
     resolveId: {
       filter: [
-        include(or(id(HELPERS_ID_RE), id(/\.wasm$/, { cleanUrl: true }))),
+        include(
+          or(id(exactRegex(HELPERS_ID)), id(/\.wasm$/, { cleanUrl: true })),
+        ),
       ],
 
       async handler(id, ...args) {
@@ -81,7 +82,9 @@ export function wasm(options: Options = {}): Plugin {
 
     load: {
       filter: [
-        include(or(id(HELPERS_ID_RE), id(/\.wasm$/, { cleanUrl: true }))),
+        include(
+          or(id(exactRegex(HELPERS_ID)), id(/\.wasm$/, { cleanUrl: true })),
+        ),
       ],
 
       async handler(id) {

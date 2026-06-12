@@ -2,7 +2,6 @@ packages: []
 
 allowBuilds:
   esbuild: false
+minimumReleaseAge: 0
 shellEmulator: true
 trustPolicy: no-downgrade
-trustPolicyExclude:
-  - chokidar@4.0.3

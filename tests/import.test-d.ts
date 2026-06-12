@@ -1,4 +1,4 @@
-/// <reference types="../types" />
+/// <reference types="../types.d.ts" />
 
 import { expectTypeOf } from 'vitest'
 import init from './add.wasm?init'

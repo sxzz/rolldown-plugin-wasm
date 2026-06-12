@@ -1,7 +1,7 @@
 import path from 'node:path'
 import { rolldownBuild, testFixtures } from '@sxzz/test-utils'
 import { describe, expect } from 'vitest'
-import { wasm } from '../src'
+import { wasm } from '../src/index.ts'
 
 const { dirname } = import.meta
 

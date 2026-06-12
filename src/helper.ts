@@ -1,4 +1,4 @@
-import type { TargetEnv } from './options'
+import type { TargetEnv } from './options.ts'
 
 export const HELPERS_ID: string = '\0wasm-helpers.js'
 

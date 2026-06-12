@@ -7,7 +7,7 @@ import process from 'node:process'
 import { createContext, SourceTextModule } from 'node:vm'
 import { rolldownBuild, testFixtures } from '@sxzz/test-utils'
 import { describe, expect, test } from 'vitest'
-import { wasm } from '../src'
+import { wasm } from '../src/index.ts'
 
 const wasmPath = path.resolve(import.meta.dirname, 'fixtures/add.wasm')
 const atob = (str: string) => Buffer.from(str, 'base64').toString('binary')

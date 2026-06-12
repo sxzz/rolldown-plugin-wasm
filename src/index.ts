@@ -8,9 +8,9 @@ import {
   getHelpersModule,
   HELPERS_ID,
   type SimpleObject,
-} from './helper'
-import { parseWasm, type WasmInfo } from './wasm-parser'
-import type { Options } from './options'
+} from './helper.ts'
+import { parseWasm, type WasmInfo } from './wasm-parser.ts'
+import type { Options } from './options.ts'
 import type { Plugin } from 'rolldown'
 
 function parseId(

@@ -151,7 +151,7 @@ export function wasm(options: Options = {}): Plugin {
         const [file, , params] = parseId(id)
 
         const filepathPlaceholder = copies[file]
-          ? `new URL(${JSON.stringify(`_ROLLDOWN_WASM_PLACEHOLDER_${copies[file].ref}`)}, import.meta.url)`
+          ? `new URL(${JSON.stringify(`$ROLLDOWN_WASM_PLACEHOLDER_${copies[file].ref}$`)}, import.meta.url)`
           : null
         let src: string | null
 
@@ -220,7 +220,7 @@ ${isInit ? 'export default ' : ''}function __wasm_init(imports) {
         if (chunk.type === 'asset') continue
 
         chunk.code = chunk.code.replaceAll(
-          /['"]_ROLLDOWN_WASM_PLACEHOLDER_(\w+)['"]/g,
+          /\$ROLLDOWN_WASM_PLACEHOLDER_(\w+)\$/g,
           (_, ref) => {
             const file = Object.keys(copies).find(
               (file) => copies[file].ref === ref,
@@ -231,11 +231,11 @@ ${isInit ? 'export default ' : ''}function __wasm_init(imports) {
               )
             }
 
-            const relative = path.relative(
+            const relative = path.posix.relative(
               path.dirname(chunk.fileName),
               copies[file].filename,
             )
-            return JSON.stringify(relative)
+            return relative
           },
         )
       }

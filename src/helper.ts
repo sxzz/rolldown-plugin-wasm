@@ -17,7 +17,7 @@ buf = Buffer.from(src, 'base64')
 `
 
 const browserFilePath = `
-return instantiate(fetch(filepath), imports, true);
+return instantiate(fetch(new URL(filepath, import.meta.url)), imports, true);
 `
 
 const browserDecode = `

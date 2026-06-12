@@ -4,6 +4,7 @@ import { Buffer } from 'node:buffer'
 import { readFile } from 'node:fs/promises'
 import path from 'node:path'
 import process from 'node:process'
+import { pathToFileURL } from 'node:url'
 import { createContext, SourceTextModule } from 'node:vm'
 import { rolldownBuild, testFixtures } from '@sxzz/test-utils'
 import { describe, expect, test } from 'vitest'
@@ -63,6 +64,7 @@ async function e2e(
   const code = chunks[0].code
   const mod = new SourceTextModule(code, {
     context: createContext({
+      URL,
       atob: platform === 'browser' ? atob : undefined,
       fetch:
         platform === 'browser' && maxFileSize === 0
@@ -90,6 +92,7 @@ async function e2e(
     }),
     initializeImportMeta: (meta) => {
       meta.dirname = process.cwd()
+      meta.url = pathToFileURL(`${process.cwd()}/`).href
     },
   })
   await mod.link((spec) => {

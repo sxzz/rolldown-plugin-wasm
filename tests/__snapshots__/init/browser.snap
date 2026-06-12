@@ -9,7 +9,7 @@ function loadWasmModule(sync, filepath, src, imports) {
 	}
 	let buf = null;
 	if (filepath) {
-		return instantiate(fetch(filepath), imports, true);
+		return instantiate(fetch(new URL(filepath, import.meta.url)), imports, true);
 	}
 	const raw = globalThis.atob(src);
 	const len = raw.length;

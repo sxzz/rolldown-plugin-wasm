@@ -2,58 +2,47 @@
 
 exports[`rolldown > init-sync.js 1`] = `
 "// init-sync.js
-import { loadWasmModule } from "\\u0000wasm-helpers.js";
-
+import { loadWasmModule } from "\\0wasm-helpers.js";
 //#region tests/fixtures/add.wasm?init&sync
 function __wasm_init(imports) {
 	return loadWasmModule(true, null, "AGFzbQEAAAABh4CAgAABYAJ/fwF/A4KAgIAAAQAFg4CAgAABABEHkICAgAACBm1lbW9yeQIAA2FkZAAAComAgIAAAQcAIAEgAGoLC7aEgIAAAgBBgIDAAAsIAQAAAAIAAAAAQYiAwAALnAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAkYCAgAAEbmFtZQGGgICAAAEAA2FkZAD+gICAAAlwcm9kdWNlcnMCCGxhbmd1YWdlAQRSdXN0BDIwMTgMcHJvY2Vzc2VkLWJ5AwVydXN0Yx0xLjM0LjEgKGZjNTBmMzI4YiAyMDE5LTA0LTI0KQZ3YWxydXMFMC43LjAMd2FzbS1iaW5kZ2VuEjAuMi40NSAoNmZhNmFmMjNiKQ==", imports);
 }
-
 //#endregion
 //#region tests/fixtures/init-sync.js
 var init_sync_default = __wasm_init;
-
 //#endregion
-export { init_sync_default as default };"
+export { init_sync_default as default };
+"
 `;
 
 exports[`rolldown > url.js 1`] = `
 "// b62665e669ab1545.wasm
 [BINARY]
 // url.js
-//#region tests/fixtures/add.wasm?url
-var add_default = "b62665e669ab1545.wasm";
-
 //#endregion
 //#region tests/fixtures/url.js
-var url_default = add_default;
-
+var url_default = "b62665e669ab1545.wasm";
 //#endregion
-export { url_default as default };"
+export { url_default as default };
+"
 `;
 
 exports[`rolldown > wasm-module.js 1`] = `
 "// b62665e669ab1545.wasm
 [BINARY]
 // wasm-module.js
-import { loadWasmModule } from "\\u0000wasm-helpers.js";
-
-//#region rolldown:runtime
+import { loadWasmModule } from "\\0wasm-helpers.js";
+//#region \\0rolldown/runtime.js
 var __defProp = Object.defineProperty;
-var __exportAll = (all, symbols) => {
+var __exportAll = (all, no_symbols) => {
 	let target = {};
-	for (var name in all) {
-		__defProp(target, name, {
-			get: all[name],
-			enumerable: true
-		});
-	}
-	if (symbols) {
-		__defProp(target, Symbol.toStringTag, { value: "Module" });
-	}
+	for (var name in all) __defProp(target, name, {
+		get: all[name],
+		enumerable: true
+	});
+	if (!no_symbols) __defProp(target, Symbol.toStringTag, { value: "Module" });
 	return target;
 };
-
 //#endregion
 //#region tests/fixtures/add.wasm
 var add_exports = /* @__PURE__ */ __exportAll({
@@ -66,11 +55,10 @@ function __wasm_init(imports) {
 const instance = await __wasm_init({});
 const memory = instance.exports.memory;
 const add = instance.exports.add;
-
 //#endregion
 //#region tests/fixtures/wasm-module.js
 var wasm_module_default = add_exports;
-
 //#endregion
-export { wasm_module_default as default };"
+export { wasm_module_default as default };
+"
 `;

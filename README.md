@@ -82,7 +82,7 @@ import init, { add } from 'some-pkg'
 import wasmUrl from 'some-pkg/add_bg.wasm?url'
 
 await init({
-  module_or_path: readFile(new URL(wasmUrl, import.meta.url)),
+  module_or_path: readFile(wasmUrl),
 })
 
 add(1, 2)

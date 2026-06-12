@@ -163,7 +163,7 @@ export function wasm(options: Options = {}): Plugin {
               '`url` parameter can only be used with non-inlined files.',
             )
           }
-          return `export default ${filepathPlaceholder}`
+          return `export default ${filepathPlaceholder}.href`
         }
 
         if (filepathPlaceholder === null) {

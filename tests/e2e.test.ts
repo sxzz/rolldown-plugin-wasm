@@ -112,9 +112,8 @@ async function e2e(
   const exported = (mod.namespace as any).default
 
   if (url) {
-    expect(exported).a('URL')
-    expect(exported.protocol).toBe('file:')
-    expect(exported.pathname).match(/^\/.+\/assets[/\\]\w{16}\.wasm$/)
+    expect(exported).a('string')
+    expect(exported).match(/assets[/\\]\w{16}\.wasm$/)
   } else if (init) {
     const ret = exported()
     if (sync) {

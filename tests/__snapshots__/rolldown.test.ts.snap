@@ -21,7 +21,7 @@ exports[`rolldown > url.js 1`] = `
 // url.js
 //#endregion
 //#region tests/fixtures/url.js
-var url_default = new URL("f83941f663df478a.wasm", import.meta.url);
+var url_default = new URL("f83941f663df478a.wasm", import.meta.url).href;
 //#endregion
 export { url_default as default };
 "

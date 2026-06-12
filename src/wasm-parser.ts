@@ -16,7 +16,7 @@ export async function parseWasm(buffer: BufferSource): Promise<WasmInfo> {
         }),
         {},
       ),
-    ) //.map(([from, names]) => ({ from, names }))
+    )
 
     const exports = WebAssembly.Module.exports(wasmModule).map(
       (item) => item.name,

@@ -2,13 +2,9 @@ import type { TargetEnv } from './options.ts'
 
 export const HELPERS_ID: string = '\0wasm-helpers.js'
 
-const nodeFilePath = `
+const nodeFetchFile = `
 const { readFile } = process.getBuiltinModule('fs/promises')
-const path = process.getBuiltinModule('path')
-
-return readFile(path.resolve(import.meta.dirname, filepath)).then(
-  (buffer) => instantiate(buffer, imports)
-)
+return readFile(fileUrl).then((buffer) => instantiate(buffer, imports))
 `
 
 const nodeDecode = `
@@ -16,8 +12,8 @@ const { Buffer } = process.getBuiltinModule('buffer')
 buf = Buffer.from(src, 'base64')
 `
 
-const browserFilePath = `
-return instantiate(fetch(new URL(filepath, import.meta.url)), imports, true);
+const browserFetchFile = `
+return instantiate(fetch(fileUrl), imports, true);
 `
 
 const browserDecode = `
@@ -33,10 +29,10 @@ const autoModule = `
 let buf = null
 const isNode = typeof process !== 'undefined' && process.versions != null && process.versions.node != null
 
-if (filepath && isNode) {
-  ${nodeFilePath}
-} else if (filepath) {
-  ${browserFilePath}
+if (fileUrl && isNode) {
+  ${nodeFetchFile}
+} else if (fileUrl) {
+  ${browserFetchFile}
 }
 
 if (isNode) {
@@ -48,8 +44,8 @@ if (isNode) {
 
 const nodeModule = `
 let buf = null
-if (filepath) {
-  ${nodeFilePath}
+if (fileUrl) {
+  ${nodeFetchFile}
 }
 
 ${nodeDecode}
@@ -57,8 +53,8 @@ ${nodeDecode}
 
 const browserModule = `
 let buf = null
-if (filepath) {
-  ${browserFilePath}
+if (fileUrl) {
+  ${browserFetchFile}
 }
 
 ${browserDecode}
@@ -90,7 +86,7 @@ function envModule(env: TargetEnv) {
 }
 
 export const getHelpersModule = (env: TargetEnv) => `
-export function loadWasmModule(sync, filepath, src, imports) {
+export function loadWasmModule(sync, fileUrl, src, imports) {
   function instantiate(source, imports, stream) {
     const instantiate = stream ? WebAssembly.instantiateStreaming : WebAssembly.instantiate;
     return instantiate(source, imports).then(({ instance }) => instance)

@@ -21,7 +21,7 @@ exports[`rolldown > url.js 1`] = `
 // url.js
 //#endregion
 //#region tests/fixtures/url.js
-var url_default = "b62665e669ab1545.wasm";
+var url_default = new URL("b62665e669ab1545.wasm", import.meta.url);
 //#endregion
 export { url_default as default };
 "
@@ -50,7 +50,7 @@ var add_exports = /* @__PURE__ */ __exportAll({
 	memory: () => memory
 });
 function __wasm_init(imports) {
-	return loadWasmModule(false, "b62665e669ab1545.wasm", null, imports);
+	return loadWasmModule(false, new URL("b62665e669ab1545.wasm", import.meta.url), null, imports);
 }
 const instance = await __wasm_init({});
 const memory = instance.exports.memory;

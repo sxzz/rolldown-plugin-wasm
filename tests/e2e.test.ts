@@ -4,7 +4,6 @@ import { Buffer } from 'node:buffer'
 import { readFile } from 'node:fs/promises'
 import path from 'node:path'
 import process from 'node:process'
-import { pathToFileURL } from 'node:url'
 import { createContext, SourceTextModule } from 'node:vm'
 import { rolldownBuild, testFixtures } from '@sxzz/test-utils'
 import { describe, expect, test } from 'vitest'
@@ -90,9 +89,9 @@ async function e2e(
             }
           : undefined,
     }),
-    initializeImportMeta: (meta) => {
+    initializeImportMeta(meta) {
       meta.dirname = process.cwd()
-      meta.url = pathToFileURL(`${process.cwd()}/`).href
+      meta.url = new URL('..', import.meta.url).href
     },
   })
   await mod.link((spec) => {
@@ -106,8 +105,9 @@ async function e2e(
   const url = entry.includes('url')
 
   if (url) {
-    expect(exported).a('string')
-    expect(exported).match(/^assets[/\\]\w{16}\.wasm$/)
+    expect(exported).instanceOf(URL)
+    expect(exported.protocol).toBe('file:')
+    expect(exported.pathname).match(/^\/.+\/assets[/\\]\w{16}\.wasm$/)
   } else if (init) {
     const ret = exported()
     if (sync) {

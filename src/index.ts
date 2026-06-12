@@ -24,7 +24,6 @@ function parseId(
 export function wasm(options: Options = {}): Plugin {
   let {
     maxFileSize = 14 * 1024,
-    publicPath = '',
     targetEnv,
     fileName = '[hash][extname]',
   } = options
@@ -33,7 +32,7 @@ export function wasm(options: Options = {}): Plugin {
     string,
     {
       filename: string
-      publicFilepath: string
+      ref: string
       buffer: Buffer
     }
   > = Object.create(null)
@@ -115,7 +114,7 @@ export function wasm(options: Options = {}): Plugin {
           return buffer.length <= maxFileSize
         }
 
-        if (!shouldInline()) {
+        if (!shouldInline() && !copies[file]) {
           const hash = createHash('sha1')
             .update(buffer)
             .digest('hex')
@@ -128,11 +127,16 @@ export function wasm(options: Options = {}): Plugin {
             .replaceAll('[extname]', ext)
             .replaceAll('[name]', name)
 
-          const publicFilepath = `${publicPath}${outputFileName}`
+          const ref = this.emitFile({
+            type: 'asset',
+            source: buffer,
+            name: 'Rolldown WASM Asset',
+            fileName: outputFileName,
+          })
 
           copies[file] = {
             filename: outputFileName,
-            publicFilepath,
+            ref,
             buffer,
           }
         }
@@ -146,23 +150,23 @@ export function wasm(options: Options = {}): Plugin {
       handler(code, id) {
         const [file, , params] = parseId(id)
 
-        const publicFilepath = copies[file]
-          ? JSON.stringify(copies[file].publicFilepath)
+        const filepathPlaceholder = copies[file]
+          ? `new URL(${JSON.stringify(`_ROLLDOWN_WASM_PLACEHOLDER_${copies[file].ref}`)}, import.meta.url)`
           : null
         let src: string | null
 
         const isSync = params.has('sync')
         const isUrl = params.has('url')
         if (isUrl) {
-          if (!publicFilepath) {
+          if (!filepathPlaceholder) {
             this.error(
               '`url` parameter can only be used with non-inlined files.',
             )
           }
-          return `export default ${publicFilepath}`
+          return `export default ${filepathPlaceholder}`
         }
 
-        if (publicFilepath === null) {
+        if (filepathPlaceholder === null) {
           src = `'${Buffer.from(code, 'binary').toString('base64')}'`
         } else {
           if (isSync) {
@@ -174,7 +178,7 @@ export function wasm(options: Options = {}): Plugin {
         const isInit = params.has('init')
         let codegen = `import { loadWasmModule } from ${JSON.stringify(HELPERS_ID)}
 ${isInit ? 'export default ' : ''}function __wasm_init(imports) {
-  return loadWasmModule(${isSync}, ${publicFilepath}, ${src}, imports)
+  return loadWasmModule(${isSync}, ${filepathPlaceholder}, ${src}, imports)
 }\n`
 
         const mod = this.getModuleInfo(id)!
@@ -211,14 +215,29 @@ ${isInit ? 'export default ' : ''}function __wasm_init(imports) {
       },
     },
 
-    generateBundle() {
-      for (const copy of Object.values(copies)) {
-        this.emitFile({
-          type: 'asset',
-          source: copy.buffer,
-          name: 'Rolldown WASM Asset',
-          fileName: copy.filename,
-        })
+    generateBundle(opt, bundle) {
+      for (const chunk of Object.values(bundle)) {
+        if (chunk.type === 'asset') continue
+
+        chunk.code = chunk.code.replaceAll(
+          /['"]_ROLLDOWN_WASM_PLACEHOLDER_(\w+)['"]/g,
+          (_, ref) => {
+            const file = Object.keys(copies).find(
+              (file) => copies[file].ref === ref,
+            )
+            if (!file) {
+              this.error(
+                `Could not find emitted WASM asset for reference ${ref}`,
+              )
+            }
+
+            const relative = path.relative(
+              path.dirname(chunk.fileName),
+              copies[file].filename,
+            )
+            return JSON.stringify(relative)
+          },
+        )
       }
     },
   }

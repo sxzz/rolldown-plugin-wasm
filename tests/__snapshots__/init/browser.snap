@@ -2,12 +2,12 @@
 [BINARY]
 // init.js
 //#region \0wasm-helpers.js
-function loadWasmModule(sync, filepath, src, imports) {
+function loadWasmModule(sync, fileUrl, src, imports) {
 	function instantiate(source, imports, stream) {
 		return (stream ? WebAssembly.instantiateStreaming : WebAssembly.instantiate)(source, imports).then(({ instance }) => instance);
 	}
 	let buf = null;
-	if (filepath) return instantiate(fetch(new URL(filepath, import.meta.url)), imports, true);
+	if (fileUrl) return instantiate(fetch(fileUrl), imports, true);
 	const raw = globalThis.atob(src);
 	const len = raw.length;
 	buf = new Uint8Array(new ArrayBuffer(len));
@@ -20,7 +20,7 @@ function loadWasmModule(sync, filepath, src, imports) {
 //#endregion
 //#region tests/fixtures/add.wasm?init
 function __wasm_init(imports) {
-	return loadWasmModule(false, "assets/b62665e669ab1545.wasm", null, imports);
+	return loadWasmModule(false, new URL("assets/b62665e669ab1545.wasm", import.meta.url), null, imports);
 }
 //#endregion
 //#region tests/fixtures/init.js

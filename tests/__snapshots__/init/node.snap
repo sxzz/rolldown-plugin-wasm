@@ -5,14 +5,14 @@ import "node:module";
 import.meta.url;
 //#endregion
 //#region \0wasm-helpers.js
-function loadWasmModule(sync, filepath, src, imports) {
+function loadWasmModule(sync, fileUrl, src, imports) {
 	function instantiate(source, imports, stream) {
 		return (stream ? WebAssembly.instantiateStreaming : WebAssembly.instantiate)(source, imports).then(({ instance }) => instance);
 	}
 	let buf = null;
-	if (filepath) {
+	if (fileUrl) {
 		const { readFile } = process.getBuiltinModule("fs/promises");
-		return readFile(process.getBuiltinModule("path").resolve(import.meta.dirname, filepath)).then((buffer) => instantiate(buffer, imports));
+		return readFile(fileUrl).then((buffer) => instantiate(buffer, imports));
 	}
 	const { Buffer } = process.getBuiltinModule("buffer");
 	buf = Buffer.from(src, "base64");
@@ -24,7 +24,7 @@ function loadWasmModule(sync, filepath, src, imports) {
 //#endregion
 //#region tests/fixtures/add.wasm?init
 function __wasm_init(imports) {
-	return loadWasmModule(false, "assets/b62665e669ab1545.wasm", null, imports);
+	return loadWasmModule(false, new URL("assets/b62665e669ab1545.wasm", import.meta.url), null, imports);
 }
 //#endregion
 //#region tests/fixtures/init.js

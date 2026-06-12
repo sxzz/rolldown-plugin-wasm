@@ -9,7 +9,12 @@ import { rolldownBuild, testFixtures } from '@sxzz/test-utils'
 import { describe, expect, test } from 'vitest'
 import { wasm } from '../src/index.ts'
 
-const wasmPath = path.resolve(import.meta.dirname, 'fixtures/example.wasm')
+const pkgWasm = readFile(
+  path.resolve(import.meta.dirname, '../examples/pkg/wasm_example_pkg_bg.wasm'),
+)
+const exampleWasm = readFile(
+  path.resolve(import.meta.dirname, 'fixtures/example.wasm'),
+)
 const atob = (str: string) => Buffer.from(str, 'base64').toString('binary')
 
 describe('e2e', () => {
@@ -44,6 +49,11 @@ async function e2e(
   platform: 'node' | 'browser',
   maxFileSize?: number,
 ) {
+  const init = entry.includes('init')
+  const sync = entry.includes('sync')
+  const url = entry.includes('url')
+  const wasmBindgen = entry.includes('wasm-bindgen')
+
   const { chunks } = await rolldownBuild(
     entry,
     [
@@ -61,15 +71,17 @@ async function e2e(
   )
 
   const code = chunks[0].code
+  const buf = wasmBindgen ? pkgWasm : exampleWasm
+
   const mod = new SourceTextModule(code, {
     context: createContext({
       URL,
+      console,
       atob: platform === 'browser' ? atob : undefined,
       fetch:
         platform === 'browser' && maxFileSize === 0
           ? async () => {
-              const buf = await readFile(wasmPath)
-              return new Response(buf, {
+              return new Response(await buf, {
                 headers: { 'Content-Type': 'application/wasm' },
               })
             }
@@ -79,9 +91,8 @@ async function e2e(
           ? {
               getBuiltinModule: (name: string) => {
                 if (name === 'buffer') return { Buffer }
-                if (name === 'path') return path
                 else if (name === 'fs/promises') {
-                  return { readFile: () => readFile(wasmPath) }
+                  return { readFile: () => buf }
                 }
 
                 throw new Error(`Unsupported module: ${name}`)
@@ -100,10 +111,6 @@ async function e2e(
   await mod.evaluate()
   const exported = (mod.namespace as any).default
 
-  const init = entry.includes('init')
-  const sync = entry.includes('sync')
-  const url = entry.includes('url')
-
   if (url) {
     expect(exported).a('URL')
     expect(exported.protocol).toBe('file:')
@@ -119,7 +126,7 @@ async function e2e(
     const instance: WebAssembly.Instance = await ret
     expect((instance.exports as any).add(1, 2)).toBe(3)
   } else {
-    expect(Object.keys(exported)).length.greaterThan(2)
+    expect(Object.keys(exported)).length.greaterThan(0)
     expect(exported.add(1, 2)).toBe(3)
   }
 }

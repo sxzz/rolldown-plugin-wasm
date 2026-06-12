@@ -224,7 +224,7 @@ ${isInit ? 'export default ' : ''}function __wasm_init(imports) {
         if (chunk.type === 'asset') continue
 
         chunk.code = chunk.code.replaceAll(
-          /\$ROLLDOWN_WASM_(\w+)_PLACEHOLDER\$/g,
+          /\$ROLLDOWN_WASM_([\w$]+)_PLACEHOLDER\$/g,
           (_, ref) => {
             const file = Object.keys(copies).find(
               (file) => copies[file].ref === ref,

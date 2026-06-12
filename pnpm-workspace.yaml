@@ -2,6 +2,7 @@ packages: []
 
 allowBuilds:
   esbuild: false
+  wasm-pack: true
 minimumReleaseAge: 0
 shellEmulator: true
 trustPolicy: no-downgrade

@@ -1,0 +1,23 @@
+{
+  "name": "wasm-example-pkg",
+  "type": "module",
+  "description": "WASM example package",
+  "version": "0.1.0",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/sxzz/rolldown-plugin-wasm"
+  },
+  "files": [
+    "wasm_example_pkg_bg.wasm",
+    "wasm_example_pkg.js",
+    "wasm_example_pkg_bg.js",
+    "wasm_example_pkg.d.ts"
+  ],
+  "main": "wasm_example_pkg.js",
+  "types": "wasm_example_pkg.d.ts",
+  "sideEffects": [
+    "./wasm_example_pkg.js",
+    "./snippets/*"
+  ]
+}

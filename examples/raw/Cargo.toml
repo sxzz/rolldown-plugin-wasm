@@ -1,0 +1,11 @@
+[package]
+name = "example-raw"
+version = "0.1.0"
+edition = "2018"
+description = "WASM example raw"
+license = "MIT"
+repository = "https://github.com/sxzz/rolldown-plugin-wasm"
+
+[lib]
+crate-type = ["cdylib"]
+path = "lib.rs"

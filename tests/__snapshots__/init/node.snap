@@ -1,4 +1,4 @@
-// assets/fb9c6725fb43d247.wasm
+// assets/f83941f663df478a.wasm
 [BINARY]
 // init.js
 import "node:module";
@@ -24,7 +24,7 @@ function loadWasmModule(sync, fileUrl, src, imports) {
 //#endregion
 //#region tests/fixtures/example.wasm?init
 function __wasm_init(imports) {
-	return loadWasmModule(false, new URL("assets/fb9c6725fb43d247.wasm", import.meta.url), null, imports);
+	return loadWasmModule(false, new URL("assets/f83941f663df478a.wasm", import.meta.url), null, imports);
 }
 //#endregion
 //#region tests/fixtures/init.js

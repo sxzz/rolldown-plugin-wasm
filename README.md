@@ -163,7 +163,7 @@ export interface Options {
 
 [MIT](./LICENSE) License © 2026-PRESENT [Kevin Deng](https://github.com/sxzz)
 
-[MIT](https://github.com/Menci/vite-plugin-wasm/blob/main/LICENSE) Copyright (c) 2022 Menci
+[MIT](https://github.com/Menci/vite-plugin-wasm/blob/main/LICENSE) Copyright (c) 2022 [Menci](https://github.com/Menci)
 
 [MIT](https://github.com/rollup/plugins/blob/master/LICENSE) License Copyright (c) 2019 [RollupJS Plugin Contributors](https://github.com/rollup/plugins/graphs/contributors)
 

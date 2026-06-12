@@ -35,7 +35,7 @@
     "lint": "eslint --cache .",
     "lint:fix": "pnpm run lint --fix",
     "build": "tsdown",
-    "build:wasm": "cargo build --target wasm32-unknown-unknown --release && cp target/wasm32-unknown-unknown/release/wasm_example.wasm tests/fixtures/example.wasm",
+    "build:examples": "bash ./examples/build.sh",
     "dev": "tsdown --watch",
     "test": "NODE_OPTIONS=--experimental-vm-modules vitest --typecheck",
     "typecheck": "tsgo --noEmit",
@@ -56,10 +56,12 @@
     "eslint": "^10.4.1",
     "prettier": "^3.8.4",
     "rolldown": "1.1.1",
+    "test-pkg": "./examples/pkg",
     "tsdown": "^0.22.2",
     "tsdown-preset-sxzz": "^0.6.0",
     "typescript": "^6.0.3",
-    "vitest": "^4.1.8"
+    "vitest": "^4.1.8",
+    "wasm-pack": "^0.15.0"
   },
   "prettier": "@sxzz/prettier-config"
 }

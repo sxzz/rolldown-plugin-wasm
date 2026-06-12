@@ -1,2 +1,2 @@
-import url from './add.wasm?url'
+import url from './example.wasm?url'
 export default url

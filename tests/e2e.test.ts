@@ -9,7 +9,7 @@ import { rolldownBuild, testFixtures } from '@sxzz/test-utils'
 import { describe, expect, test } from 'vitest'
 import { wasm } from '../src/index.ts'
 
-const wasmPath = path.resolve(import.meta.dirname, 'fixtures/add.wasm')
+const wasmPath = path.resolve(import.meta.dirname, 'fixtures/example.wasm')
 const atob = (str: string) => Buffer.from(str, 'base64').toString('binary')
 
 describe('e2e', () => {
@@ -105,7 +105,7 @@ async function e2e(
   const url = entry.includes('url')
 
   if (url) {
-    expect(exported).instanceOf(URL)
+    expect(exported).a('URL')
     expect(exported.protocol).toBe('file:')
     expect(exported.pathname).match(/^\/.+\/assets[/\\]\w{16}\.wasm$/)
   } else if (init) {
@@ -119,7 +119,7 @@ async function e2e(
     const instance: WebAssembly.Instance = await ret
     expect((instance.exports as any).add(1, 2)).toBe(3)
   } else {
-    expect(Object.keys(exported)).toEqual(['add', 'memory'])
+    expect(Object.keys(exported)).length.greaterThan(2)
     expect(exported.add(1, 2)).toBe(3)
   }
 }

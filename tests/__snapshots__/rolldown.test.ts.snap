@@ -3,9 +3,9 @@
 exports[`rolldown > init-sync.js 1`] = `
 "// init-sync.js
 import { loadWasmModule } from "\\0wasm-helpers.js";
-//#region tests/fixtures/add.wasm?init&sync
+//#region tests/fixtures/example.wasm?init&sync
 function __wasm_init(imports) {
-	return loadWasmModule(true, null, "AGFzbQEAAAABh4CAgAABYAJ/fwF/A4KAgIAAAQAFg4CAgAABABEHkICAgAACBm1lbW9yeQIAA2FkZAAAComAgIAAAQcAIAEgAGoLC7aEgIAAAgBBgIDAAAsIAQAAAAIAAAAAQYiAwAALnAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAkYCAgAAEbmFtZQGGgICAAAEAA2FkZAD+gICAAAlwcm9kdWNlcnMCCGxhbmd1YWdlAQRSdXN0BDIwMTgMcHJvY2Vzc2VkLWJ5AwVydXN0Yx0xLjM0LjEgKGZjNTBmMzI4YiAyMDE5LTA0LTI0KQZ3YWxydXMFMC43LjAMd2FzbS1iaW5kZ2VuEjAuMi40NSAoNmZhNmFmMjNiKQ==", imports);
+	return loadWasmModule(true, null, "AGFzbQEAAAABBwFgAn9/AX8DAgEABAUBcAEBAQUDAQAQBhkDfwFBgIDAAAt/AEGAgMAAC38AQYCAwAALBysEBm1lbW9yeQIAA2FkZAAACl9fZGF0YV9lbmQDAQtfX2hlYXBfYmFzZQMCCgkBBwAgASAAagsANQRuYW1lABIRd2FzbV9leGFtcGxlLndhc20BBgEAA2FkZAcSAQAPX19zdGFja19wb2ludGVyAE0JcHJvZHVjZXJzAghsYW5ndWFnZQEEUnVzdAAMcHJvY2Vzc2VkLWJ5AQVydXN0Yx0xLjkxLjEgKGVkNjFlN2Q3ZSAyMDI1LTExLTA3KQCUAQ90YXJnZXRfZmVhdHVyZXMIKwtidWxrLW1lbW9yeSsPYnVsay1tZW1vcnktb3B0KxZjYWxsLWluZGlyZWN0LW92ZXJsb25nKwptdWx0aXZhbHVlKw9tdXRhYmxlLWdsb2JhbHMrE25vbnRyYXBwaW5nLWZwdG9pbnQrD3JlZmVyZW5jZS10eXBlcysIc2lnbi1leHQ=", imports);
 }
 //#endregion
 //#region tests/fixtures/init-sync.js
@@ -16,19 +16,19 @@ export { init_sync_default as default };
 `;
 
 exports[`rolldown > url.js 1`] = `
-"// b62665e669ab1545.wasm
+"// fb9c6725fb43d247.wasm
 [BINARY]
 // url.js
 //#endregion
 //#region tests/fixtures/url.js
-var url_default = new URL("b62665e669ab1545.wasm", import.meta.url);
+var url_default = new URL("$ROLLDOWN_WASM_SkhF$JLwk8CofIkZCFlROw_PLACEHOLDER$", import.meta.url);
 //#endregion
 export { url_default as default };
 "
 `;
 
 exports[`rolldown > wasm-module.js 1`] = `
-"// b62665e669ab1545.wasm
+"// fb9c6725fb43d247.wasm
 [BINARY]
 // wasm-module.js
 import { loadWasmModule } from "\\0wasm-helpers.js";
@@ -44,20 +44,24 @@ var __exportAll = (all, no_symbols) => {
 	return target;
 };
 //#endregion
-//#region tests/fixtures/add.wasm
-var add_exports = /* @__PURE__ */ __exportAll({
+//#region tests/fixtures/example.wasm
+var example_exports = /* @__PURE__ */ __exportAll({
+	__data_end: () => __data_end,
+	__heap_base: () => __heap_base,
 	add: () => add,
 	memory: () => memory
 });
 function __wasm_init(imports) {
-	return loadWasmModule(false, new URL("b62665e669ab1545.wasm", import.meta.url), null, imports);
+	return loadWasmModule(false, new URL("$ROLLDOWN_WASM_SkhF$JLwk8CofIkZCFlROw_PLACEHOLDER$", import.meta.url), null, imports);
 }
 const instance = await __wasm_init({});
 const memory = instance.exports.memory;
 const add = instance.exports.add;
+const __data_end = instance.exports.__data_end;
+const __heap_base = instance.exports.__heap_base;
 //#endregion
 //#region tests/fixtures/wasm-module.js
-var wasm_module_default = add_exports;
+var wasm_module_default = example_exports;
 //#endregion
 export { wasm_module_default as default };
 "

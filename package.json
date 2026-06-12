@@ -35,6 +35,7 @@
     "lint": "eslint --cache .",
     "lint:fix": "pnpm run lint --fix",
     "build": "tsdown",
+    "build:wasm": "cargo build --target wasm32-unknown-unknown --release && cp target/wasm32-unknown-unknown/release/wasm_example.wasm tests/fixtures/example.wasm",
     "dev": "tsdown --watch",
     "test": "NODE_OPTIONS=--experimental-vm-modules vitest --typecheck",
     "typecheck": "tsgo --noEmit",
@@ -43,7 +44,7 @@
     "prepublishOnly": "pnpm run build"
   },
   "peerDependencies": {
-    "rolldown": "^1.0.0-beta.58"
+    "rolldown": "^1.0.0"
   },
   "devDependencies": {
     "@sxzz/eslint-config": "^8.1.0",

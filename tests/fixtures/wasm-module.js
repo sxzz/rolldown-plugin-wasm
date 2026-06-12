@@ -1,2 +1,2 @@
-import * as wasm from './add.wasm'
+import * as wasm from './example.wasm'
 export default wasm

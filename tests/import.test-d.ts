@@ -1,8 +1,8 @@
 /// <reference types="../types.d.ts" />
 
 import { expectTypeOf } from 'vitest'
-import init from './add.wasm?init'
-import initSync from './add.wasm?init&sync'
+import init from './example.wasm?init'
+import initSync from './example.wasm?init&sync'
 
 {
   const instance = init()

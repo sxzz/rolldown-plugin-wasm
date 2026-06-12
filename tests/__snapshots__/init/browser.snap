@@ -1,4 +1,4 @@
-// assets/b62665e669ab1545.wasm
+// assets/fb9c6725fb43d247.wasm
 [BINARY]
 // init.js
 //#region \0wasm-helpers.js
@@ -18,9 +18,9 @@ function loadWasmModule(sync, fileUrl, src, imports) {
 	} else return instantiate(buf, imports);
 }
 //#endregion
-//#region tests/fixtures/add.wasm?init
+//#region tests/fixtures/example.wasm?init
 function __wasm_init(imports) {
-	return loadWasmModule(false, new URL("assets/b62665e669ab1545.wasm", import.meta.url), null, imports);
+	return loadWasmModule(false, new URL("assets/fb9c6725fb43d247.wasm", import.meta.url), null, imports);
 }
 //#endregion
 //#region tests/fixtures/init.js

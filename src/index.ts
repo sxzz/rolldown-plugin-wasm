@@ -151,7 +151,7 @@ export function wasm(options: Options = {}): Plugin {
         const [file, , params] = parseId(id)
 
         const filepathPlaceholder = copies[file]
-          ? `new URL(${JSON.stringify(`$ROLLDOWN_WASM_PLACEHOLDER_${copies[file].ref}$`)}, import.meta.url)`
+          ? `new URL(${JSON.stringify(`$ROLLDOWN_WASM_${copies[file].ref}_PLACEHOLDER$`)}, import.meta.url)`
           : null
         let src: string | null
 
@@ -185,9 +185,13 @@ ${isInit ? 'export default ' : ''}function __wasm_init(imports) {
 
         if (!isInit) {
           const { imports, exports } = mod.meta.wasmInfo as WasmInfo
-          codegen += imports.map(([from], i) => {
-            return `import * as _wasmImport_${i} from ${JSON.stringify(from)}\n`
-          })
+
+          codegen += `${imports
+            .map(
+              ([from], i) =>
+                `import * as _wasmImport_${i} from ${JSON.stringify(from)}`,
+            )
+            .join('\n')}\n`
 
           const importObject: SimpleObject = imports.map(([from, names], i) => {
             return {
@@ -220,7 +224,7 @@ ${isInit ? 'export default ' : ''}function __wasm_init(imports) {
         if (chunk.type === 'asset') continue
 
         chunk.code = chunk.code.replaceAll(
-          /\$ROLLDOWN_WASM_PLACEHOLDER_(\w+)\$/g,
+          /\$ROLLDOWN_WASM_(\w+)_PLACEHOLDER\$/g,
           (_, ref) => {
             const file = Object.keys(copies).find(
               (file) => copies[file].ref === ref,

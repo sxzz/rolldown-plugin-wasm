@@ -4,9 +4,8 @@ export default nodeLib(
   {},
   {
     exports: {
-      customExports(exports) {
-        exports['./types'] = './types.d.ts'
-        return exports
+      customExports: {
+        './types': './types.d.ts',
       },
     },
   },

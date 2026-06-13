@@ -85,11 +85,12 @@ function envModule(env: TargetEnv) {
 }
 
 export const getHelpersModule = (env: TargetEnv) => `
+function instantiate(source, imports, stream) {
+  const instantiate = WebAssembly[stream ? 'instantiateStreaming' : 'instantiate']
+  return instantiate(source, imports).then(({ instance }) => instance)
+}
+
 export function loadWasmModule(sync, fileUrl, src, imports) {
-  function instantiate(source, imports, stream) {
-    const instantiate = stream ? WebAssembly.instantiateStreaming : WebAssembly.instantiate;
-    return instantiate(source, imports).then(({ instance }) => instance)
-  }
 
   ${envModule(env)}
 

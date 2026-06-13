@@ -2,10 +2,11 @@
 [BINARY]
 // init.js
 //#region \0wasm-helpers.js
+function instantiate(source, imports, stream) {
+	const instantiate = WebAssembly[stream ? "instantiateStreaming" : "instantiate"];
+	return instantiate(source, imports).then(({ instance }) => instance);
+}
 function loadWasmModule(sync, fileUrl, src, imports) {
-	function instantiate(source, imports, stream) {
-		return (stream ? WebAssembly.instantiateStreaming : WebAssembly.instantiate)(source, imports).then(({ instance }) => instance);
-	}
 	let buf = null;
 	if (fileUrl) {
 		const { readFile } = process.getBuiltinModule("fs/promises");

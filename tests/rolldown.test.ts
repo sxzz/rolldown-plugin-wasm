@@ -2,8 +2,12 @@ import path from 'node:path'
 import { rolldownBuild, testFixtures } from '@sxzz/test-utils'
 import { describe, expect } from 'vitest'
 import { wasm } from '../src/index.ts'
+import type { TreeshakingOptions } from 'rolldown'
 
 const { dirname } = import.meta
+const treeshake: TreeshakingOptions = {
+  moduleSideEffects: false,
+}
 
 describe('rolldown', async () => {
   await testFixtures(
@@ -19,6 +23,7 @@ describe('rolldown', async () => {
         ],
         {
           platform: args.platform,
+          treeshake,
         },
       )
       await expect(snapshot).toMatchFileSnapshot(
@@ -40,6 +45,7 @@ describe('rolldown', async () => {
       const { snapshot } = await rolldownBuild(id, [wasm({ maxFileSize: 0 })], {
         platform: 'browser',
         external: ['\0wasm-helpers.js'],
+        treeshake,
       })
       return snapshot
     },

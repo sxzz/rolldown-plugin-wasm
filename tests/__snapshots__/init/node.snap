@@ -1,9 +1,6 @@
 // assets/f83941f663df478a.wasm
 [BINARY]
 // init.js
-import "node:module";
-import.meta.url;
-//#endregion
 //#region \0wasm-helpers.js
 function loadWasmModule(sync, fileUrl, src, imports) {
 	function instantiate(source, imports, stream) {

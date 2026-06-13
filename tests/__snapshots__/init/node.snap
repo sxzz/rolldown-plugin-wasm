@@ -11,7 +11,6 @@ function loadWasmModule(sync, fileUrl, src, imports) {
 		const { readFile } = process.getBuiltinModule("fs/promises");
 		return readFile(fileUrl).then((buffer) => instantiate(buffer, imports));
 	}
-	const { Buffer } = process.getBuiltinModule("buffer");
 	buf = Buffer.from(src, "base64");
 	if (sync) {
 		const mod = new WebAssembly.Module(buf);

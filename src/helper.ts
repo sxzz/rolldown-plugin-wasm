@@ -8,7 +8,6 @@ return readFile(fileUrl).then((buffer) => instantiate(buffer, imports))
 `
 
 const nodeDecode = `
-const { Buffer } = process.getBuiltinModule('buffer')
 buf = Buffer.from(src, 'base64')
 `
 

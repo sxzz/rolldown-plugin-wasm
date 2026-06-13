@@ -12,10 +12,8 @@ function loadWasmModule(sync, fileUrl, src, imports) {
 		const { readFile } = process.getBuiltinModule("fs/promises");
 		return readFile(fileUrl).then((buffer) => instantiate(buffer, imports));
 	} else if (fileUrl) return instantiate(fetch(fileUrl), imports, true);
-	if (isNode) {
-		const { Buffer } = process.getBuiltinModule("buffer");
-		buf = Buffer.from(src, "base64");
-	} else {
+	if (isNode) buf = Buffer.from(src, "base64");
+	else {
 		const raw = globalThis.atob(src);
 		const len = raw.length;
 		buf = new Uint8Array(new ArrayBuffer(len));

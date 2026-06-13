@@ -77,6 +77,7 @@ async function e2e(
     context: createContext({
       URL,
       console,
+      Buffer,
       atob: platform === 'browser' ? atob : undefined,
       fetch:
         platform === 'browser' && maxFileSize === 0

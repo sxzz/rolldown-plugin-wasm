@@ -2,7 +2,7 @@
   "name": "rolldown-plugin-wasm",
   "type": "module",
   "version": "0.3.2",
-  "packageManager": "pnpm@11.27.0",
+  "packageManager": "pnpm@12.4.1",
   "description": "Rolldown plugin for WASM.",
   "author": "Kevin Deng <sxzz@sxzz.moe>",
   "license": "MIT",

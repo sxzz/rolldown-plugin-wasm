@@ -1,10 +1,14 @@
+minimumReleaseAge: 0
+minimumReleaseAgeExcludePrune: true
+
+trustLockfile: true
+trustPolicy: no-downgrade
+trustPolicyIgnoreAfter: 10080 # 7 days
+trustPolicyExcludePrune: true
+
+shellEmulator: true
 packages: []
 
 allowBuilds:
   esbuild: false
   wasm-pack: true
-minimumReleaseAge: 0
-shellEmulator: true
-trustLockfile: true
-trustPolicy: no-downgrade
-trustPolicyIgnoreAfter: 10080 # 7 days

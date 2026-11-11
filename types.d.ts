@@ -12,6 +12,12 @@ declare module '*.wasm?init&sync' {
   export default initWasm
 }
 
+// wasm?source
+declare module '*.wasm?source' {
+  const wasmModule: WebAssembly.Module
+  export default wasmModule
+}
+
 // wasm?url
 declare module '*.wasm?url' {
   const wasmUrl: string

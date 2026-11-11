@@ -1,30 +1,28 @@
 // assets/f83941f663df478a.wasm
 [BINARY]
 // init.js
-//#region \0wasm-helpers.js
-function instantiate(source, imports, stream) {
+// \0wasm-helpers.js
+function instantiate(source, imports, stream, compile) {
+	if (compile) return WebAssembly[stream ? "compileStreaming" : "compile"](source);
 	const instantiate = WebAssembly[stream ? "instantiateStreaming" : "instantiate"];
 	return instantiate(source, imports).then(({ instance }) => instance);
 }
-function loadWasmModule(sync, fileUrl, src, imports) {
+function loadWasmModule(sync, fileUrl, src, imports, compile) {
 	let buf = null;
-	if (fileUrl) return instantiate(fetch(fileUrl), imports, true);
+	if (fileUrl) return instantiate(fetch(fileUrl), imports, true, compile);
 	const raw = globalThis.atob(src);
 	const len = raw.length;
 	buf = new Uint8Array(new ArrayBuffer(len));
 	for (let i = 0; i < len; i++) buf[i] = raw.charCodeAt(i);
 	if (sync) {
 		const mod = new WebAssembly.Module(buf);
-		return new WebAssembly.Instance(mod, imports);
-	} else return instantiate(buf, imports);
+		return compile ? mod : new WebAssembly.Instance(mod, imports);
+	} else return instantiate(buf, imports, false, compile);
 }
-//#endregion
-//#region tests/fixtures/example.wasm?init
+// tests/fixtures/example.wasm?init
 function __wasm_init(imports) {
 	return loadWasmModule(false, new URL("assets/f83941f663df478a.wasm", import.meta.url), null, imports);
 }
-//#endregion
-//#region tests/fixtures/init.js
+// tests/fixtures/init.js
 var init_default = __wasm_init;
-//#endregion
 export { init_default as default };

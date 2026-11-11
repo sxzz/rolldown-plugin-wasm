@@ -4,7 +4,7 @@ export const HELPERS_ID: string = '\0wasm-helpers.js'
 
 const nodeFetchFile = `
 const { readFile } = process.getBuiltinModule('fs/promises')
-return readFile(fileUrl).then((buffer) => instantiate(buffer, imports))
+return readFile(fileUrl).then((buffer) => instantiate(buffer, imports, false, compile))
 `
 
 const nodeDecode = `
@@ -12,7 +12,7 @@ buf = Buffer.from(src, 'base64')
 `
 
 const browserFetchFile = `
-return instantiate(fetch(fileUrl), imports, true);
+return instantiate(fetch(fileUrl), imports, true, compile);
 `
 
 const browserDecode = `
@@ -85,20 +85,23 @@ function envModule(env: TargetEnv) {
 }
 
 export const getHelpersModule = (env: TargetEnv) => `
-function instantiate(source, imports, stream) {
+function instantiate(source, imports, stream, compile) {
+  if (compile) {
+    return WebAssembly[stream ? 'compileStreaming' : 'compile'](source)
+  }
   const instantiate = WebAssembly[stream ? 'instantiateStreaming' : 'instantiate']
   return instantiate(source, imports).then(({ instance }) => instance)
 }
 
-export function loadWasmModule(sync, fileUrl, src, imports) {
+export function loadWasmModule(sync, fileUrl, src, imports, compile) {
 
   ${envModule(env)}
 
   if (sync) {
     const mod = new WebAssembly.Module(buf)
-    return new WebAssembly.Instance(mod, imports)
+    return compile ? mod : new WebAssembly.Instance(mod, imports)
   } else {
-    return instantiate(buf, imports)
+    return instantiate(buf, imports, false, compile)
   }
 }
 `

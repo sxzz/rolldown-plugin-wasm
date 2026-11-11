@@ -15,6 +15,19 @@ export { init_sync_default as default };
 "
 `;
 
+exports[`rolldown > source.js 1`] = `
+"// f83941f663df478a.wasm
+[BINARY]
+// source.js
+import { loadWasmModule } from "\\0wasm-helpers.js";
+//#endregion
+//#region tests/fixtures/source.js
+var source_default = await loadWasmModule(false, new URL("f83941f663df478a.wasm", import.meta.url), null, void 0, true);
+//#endregion
+export { source_default as default };
+"
+`;
+
 exports[`rolldown > url.js 1`] = `
 "// f83941f663df478a.wasm
 [BINARY]

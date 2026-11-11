@@ -95,14 +95,18 @@ export function wasm(options: Options = {}): Plugin {
         const buffer = await readFile(file)
 
         const isInit = params.has('init')
+        const isSource = params.has('source')
         const isSync = params.has('sync')
         const isUrl = params.has('url')
         if (isSync && isUrl) {
           this.error('`sync` and `url` parameters cannot be used together.')
         }
+        if (isInit && isSource) {
+          this.error('`init` and `source` parameters cannot be used together.')
+        }
 
         this.addWatchFile(file)
-        if (!isInit) {
+        if (!isInit && !isSource) {
           this.getModuleInfo(id)!.meta.wasmInfo = await parseWasm(buffer)
         }
 
@@ -173,6 +177,15 @@ export function wasm(options: Options = {}): Plugin {
             this.error('non-inlined files can not be `sync`.')
           }
           src = null
+        }
+
+        const isSource = params.has('source')
+        if (isSource) {
+          return {
+            map: { mappings: '' },
+            code: `import { loadWasmModule } from ${JSON.stringify(HELPERS_ID)}
+export default await loadWasmModule(${isSync}, ${filepathPlaceholder}, ${src}, undefined, true)\n`,
+          }
         }
 
         const isInit = params.has('init')

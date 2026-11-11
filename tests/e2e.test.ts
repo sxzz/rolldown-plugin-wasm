@@ -52,6 +52,7 @@ async function e2e(
   const init = entry.includes('init')
   const sync = entry.includes('sync')
   const url = entry.includes('url')
+  const source = entry.includes('source')
   const wasmBindgen = entry.includes('wasm-bindgen')
 
   const { chunks } = await rolldownBuild(
@@ -115,6 +116,12 @@ async function e2e(
   if (url) {
     expect(exported).a('string')
     expect(exported).match(/assets[/\\]\w{16}\.wasm$/)
+  } else if (source) {
+    expect(exported).a('WebAssembly.Module')
+    const instance = await WebAssembly.instantiate(
+      exported as WebAssembly.Module,
+    )
+    expect((instance.exports as any).add(1, 2)).toBe(3)
   } else if (init) {
     const ret = exported()
     if (sync) {

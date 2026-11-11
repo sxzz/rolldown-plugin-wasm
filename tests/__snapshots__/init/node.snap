@@ -2,21 +2,22 @@
 [BINARY]
 // init.js
 //#region \0wasm-helpers.js
-function instantiate(source, imports, stream) {
+function instantiate(source, imports, stream, compile) {
+	if (compile) return WebAssembly[stream ? "compileStreaming" : "compile"](source);
 	const instantiate = WebAssembly[stream ? "instantiateStreaming" : "instantiate"];
 	return instantiate(source, imports).then(({ instance }) => instance);
 }
-function loadWasmModule(sync, fileUrl, src, imports) {
+function loadWasmModule(sync, fileUrl, src, imports, compile) {
 	let buf = null;
 	if (fileUrl) {
 		const { readFile } = process.getBuiltinModule("fs/promises");
-		return readFile(fileUrl).then((buffer) => instantiate(buffer, imports));
+		return readFile(fileUrl).then((buffer) => instantiate(buffer, imports, false, compile));
 	}
 	buf = Buffer.from(src, "base64");
 	if (sync) {
 		const mod = new WebAssembly.Module(buf);
-		return new WebAssembly.Instance(mod, imports);
-	} else return instantiate(buf, imports);
+		return compile ? mod : new WebAssembly.Instance(mod, imports);
+	} else return instantiate(buf, imports, false, compile);
 }
 //#endregion
 //#region tests/fixtures/example.wasm?init

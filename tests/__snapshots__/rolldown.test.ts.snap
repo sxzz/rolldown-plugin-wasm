@@ -3,14 +3,12 @@
 exports[`rolldown > init-sync.js 1`] = `
 "// init-sync.js
 import { loadWasmModule } from "\\0wasm-helpers.js";
-//#region tests/fixtures/example.wasm?init&sync
+// tests/fixtures/example.wasm?init&sync
 function __wasm_init(imports) {
 	return loadWasmModule(true, null, "AGFzbQEAAAABBwFgAn9/AX8DAgEABAUBcAEBAQUDAQAQBhkDfwFBgIDAAAt/AEGAgMAAC38AQYCAwAALBysEBm1lbW9yeQIAA2FkZAAACl9fZGF0YV9lbmQDAQtfX2hlYXBfYmFzZQMCCgkBBwAgASAAagsANARuYW1lABEQZXhhbXBsZV9yYXcud2FzbQEGAQADYWRkBxIBAA9fX3N0YWNrX3BvaW50ZXIATQlwcm9kdWNlcnMCCGxhbmd1YWdlAQRSdXN0AAxwcm9jZXNzZWQtYnkBBXJ1c3RjHTEuOTEuMSAoZWQ2MWU3ZDdlIDIwMjUtMTEtMDcpAJQBD3RhcmdldF9mZWF0dXJlcwgrC2J1bGstbWVtb3J5Kw9idWxrLW1lbW9yeS1vcHQrFmNhbGwtaW5kaXJlY3Qtb3ZlcmxvbmcrCm11bHRpdmFsdWUrD211dGFibGUtZ2xvYmFscysTbm9udHJhcHBpbmctZnB0b2ludCsPcmVmZXJlbmNlLXR5cGVzKwhzaWduLWV4dA==", imports);
 }
-//#endregion
-//#region tests/fixtures/init-sync.js
+// tests/fixtures/init-sync.js
 var init_sync_default = __wasm_init;
-//#endregion
 export { init_sync_default as default };
 "
 `;
@@ -20,10 +18,8 @@ exports[`rolldown > source.js 1`] = `
 [BINARY]
 // source.js
 import { loadWasmModule } from "\\0wasm-helpers.js";
-//#endregion
-//#region tests/fixtures/source.js
+// tests/fixtures/source.js
 var source_default = await loadWasmModule(false, new URL("f83941f663df478a.wasm", import.meta.url), null, void 0, true);
-//#endregion
 export { source_default as default };
 "
 `;
@@ -32,10 +28,8 @@ exports[`rolldown > url.js 1`] = `
 "// f83941f663df478a.wasm
 [BINARY]
 // url.js
-//#endregion
-//#region tests/fixtures/url.js
+// tests/fixtures/url.js
 var url_default = new URL("f83941f663df478a.wasm", import.meta.url).href;
-//#endregion
 export { url_default as default };
 "
 `;
@@ -45,19 +39,18 @@ exports[`rolldown > wasm-bindgen.js 1`] = `
 [BINARY]
 // wasm-bindgen.js
 import { loadWasmModule } from "\\0wasm-helpers.js";
-//#region \\0rolldown/runtime.js
+// \\0rolldown/runtime.js
 var __defProp = Object.defineProperty;
-var __exportAll = (all, no_symbols) => {
-	let target = {};
+var __exportAll = (all, flags) => {
+	let target = Object.setPrototypeOf({}, null);
 	for (var name in all) __defProp(target, name, {
 		get: all[name],
 		enumerable: true
 	});
-	if (!no_symbols) __defProp(target, Symbol.toStringTag, { value: "Module" });
-	return target;
+	if (!(flags & 1)) __defProp(target, Symbol.toStringTag, { value: "Module" });
+	return flags & 2 ? target : Object.preventExtensions(target);
 };
-//#endregion
-//#region examples/pkg/wasm_example_pkg_bg.js
+// examples/pkg/wasm_example_pkg_bg.js
 /**
 * @param {number} a
 * @param {number} b
@@ -79,8 +72,7 @@ let wasm;
 function __wbg_set_wasm(val) {
 	wasm = val;
 }
-//#endregion
-//#region examples/pkg/wasm_example_pkg_bg.wasm
+// examples/pkg/wasm_example_pkg_bg.wasm
 var wasm_example_pkg_bg_exports = /* @__PURE__ */ __exportAll({
 	__wbindgen_externrefs: () => __wbindgen_externrefs,
 	__wbindgen_start: () => __wbindgen_start,
@@ -95,16 +87,13 @@ const memory = instance.exports.memory;
 const add = instance.exports.add;
 const __wbindgen_externrefs = instance.exports.__wbindgen_externrefs;
 const __wbindgen_start = instance.exports.__wbindgen_start;
-//#endregion
-//#region examples/pkg/wasm_example_pkg.js
+// examples/pkg/wasm_example_pkg.js
 var wasm_example_pkg_exports = /* @__PURE__ */ __exportAll({ add: () => add$1 });
 __wbg_set_wasm(wasm_example_pkg_bg_exports);
 __wbindgen_start();
-//#endregion
-//#region tests/fixtures/wasm-bindgen.js
+// tests/fixtures/wasm-bindgen.js
 add$1(1, 2);
 var wasm_bindgen_default = wasm_example_pkg_exports;
-//#endregion
 export { wasm_bindgen_default as default };
 "
 `;
@@ -114,19 +103,18 @@ exports[`rolldown > wasm-module.js 1`] = `
 [BINARY]
 // wasm-module.js
 import { loadWasmModule } from "\\0wasm-helpers.js";
-//#region \\0rolldown/runtime.js
+// \\0rolldown/runtime.js
 var __defProp = Object.defineProperty;
-var __exportAll = (all, no_symbols) => {
-	let target = {};
+var __exportAll = (all, flags) => {
+	let target = Object.setPrototypeOf({}, null);
 	for (var name in all) __defProp(target, name, {
 		get: all[name],
 		enumerable: true
 	});
-	if (!no_symbols) __defProp(target, Symbol.toStringTag, { value: "Module" });
-	return target;
+	if (!(flags & 1)) __defProp(target, Symbol.toStringTag, { value: "Module" });
+	return flags & 2 ? target : Object.preventExtensions(target);
 };
-//#endregion
-//#region tests/fixtures/example.wasm
+// tests/fixtures/example.wasm
 var example_exports = /* @__PURE__ */ __exportAll({
 	__data_end: () => __data_end,
 	__heap_base: () => __heap_base,
@@ -141,10 +129,8 @@ const memory = instance.exports.memory;
 const add = instance.exports.add;
 const __data_end = instance.exports.__data_end;
 const __heap_base = instance.exports.__heap_base;
-//#endregion
-//#region tests/fixtures/wasm-module.js
+// tests/fixtures/wasm-module.js
 var wasm_module_default = example_exports;
-//#endregion
 export { wasm_module_default as default };
 "
 `;

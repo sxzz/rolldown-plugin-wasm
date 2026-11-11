@@ -13,10 +13,12 @@ import { parseWasm, type WasmInfo } from './wasm-parser.ts'
 import type { Options } from './options.ts'
 import type { Plugin } from 'rolldown'
 
+const WASM_RE = /\.wasm$/
+
 function parseId(
   url: string,
 ): [file: string, query: string | undefined, params: URLSearchParams] {
-  const [file, query] = url.split('?')
+  const [file, query] = url.split('?', 2)
   const params = new URLSearchParams(query)
   return [file, query, params]
 }
@@ -58,7 +60,7 @@ export function wasm(options: Options = {}): Plugin {
     resolveId: {
       filter: [
         include(
-          or(id(exactRegex(HELPERS_ID)), id(/\.wasm$/, { cleanUrl: true })),
+          or(id(exactRegex(HELPERS_ID)), id(WASM_RE, { cleanUrl: true })),
         ),
       ],
 
@@ -82,7 +84,7 @@ export function wasm(options: Options = {}): Plugin {
     load: {
       filter: [
         include(
-          or(id(exactRegex(HELPERS_ID)), id(/\.wasm$/, { cleanUrl: true })),
+          or(id(exactRegex(HELPERS_ID)), id(WASM_RE, { cleanUrl: true })),
         ),
       ],
 
@@ -150,16 +152,13 @@ export function wasm(options: Options = {}): Plugin {
     },
 
     transform: {
-      filter: [include(id(/\.wasm$/, { cleanUrl: true }))],
+      filter: [include(id(WASM_RE, { cleanUrl: true }))],
       handler(code, id) {
         const [file, , params] = parseId(id)
 
         const filepathPlaceholder = copies[file]
           ? `new URL(${JSON.stringify(`$ROLLDOWN_WASM_${copies[file].ref}_PLACEHOLDER$`)}, import.meta.url)`
           : null
-        let src: string | null
-
-        const isSync = params.has('sync')
         const isUrl = params.has('url')
         if (isUrl) {
           if (!filepathPlaceholder) {
@@ -169,6 +168,9 @@ export function wasm(options: Options = {}): Plugin {
           }
           return `export default ${filepathPlaceholder}.href`
         }
+
+        const isSync = params.has('sync')
+        let src: string | null
 
         if (filepathPlaceholder === null) {
           src = `'${Buffer.from(code, 'binary').toString('base64')}'`
